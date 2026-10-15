@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import apiRouter from "./routes/index.js";
@@ -43,7 +44,16 @@ app.get("/health", (req, res) => {
 // API Routes
 app.use("/api", apiRouter);
 
-// 404 Handler
+// Serve frontend static assets if dist/ exists (single-server deployment mode)
+const distPath = path.resolve(__dirname, "../../dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get(/^(?!\/api|\/health).*/, (req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
+  });
+}
+
+// 404 Handler (for unmatched API routes or missing assets)
 app.use((req, res) => {
   res.status(404).json({
     success: false,
