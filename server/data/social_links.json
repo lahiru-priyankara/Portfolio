@@ -1,0 +1,54 @@
+[
+  {
+    "id": "soc-github",
+    "platform": "github",
+    "title": "GitHub",
+    "url": "https://github.com/YeshiniWckramasinghe",
+    "display_value": "github.com/YeshiniWckramasinghe",
+    "category": "developer",
+    "sort_order": 1,
+    "is_active": true
+  },
+  {
+    "id": "soc-linkedin",
+    "platform": "linkedin",
+    "title": "LinkedIn",
+    "url": "https://linkedin.com/in/yeshini",
+    "display_value": "linkedin.com/in/yeshini",
+    "category": "professional",
+    "sort_order": 2,
+    "is_active": true
+  },
+  {
+    "id": "soc-email",
+    "platform": "email",
+    "title": "Email",
+    "url": "mailto:yeshiniarchana@gmail.com",
+    "display_value": "yeshiniarchana@gmail.com",
+    "category": "direct",
+    "sort_order": 3,
+    "is_active": true
+  },
+  {
+    "id": "soc-leetcode",
+    "platform": "leetcode",
+    "title": "LeetCode",
+    "url": "https://leetcode.com/u/yeshini",
+    "display_value": "leetcode.com/u/yeshini",
+    "category": "developer",
+    "sort_order": 4,
+    "is_active": true,
+    "updated_at": "2026-10-15T06:47:47.978Z"
+  },
+  {
+    "id": "soc-twitter",
+    "platform": "twitter",
+    "title": "Twitter / X",
+    "url": "https://x.com/yeshini_dev",
+    "display_value": "@yeshini_dev",
+    "category": "social",
+    "sort_order": 5,
+    "is_active": true,
+    "updated_at": "2026-10-15T06:48:02.074Z"
+  }
+]

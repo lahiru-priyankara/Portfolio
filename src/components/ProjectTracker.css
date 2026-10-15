@@ -1,0 +1,449 @@
+/* =============================================================================
+   PROJECT PERFORMANCE TRACKER WIDGET (PROFESSIONALLY MANAGED METRICS)
+   Adapts harmoniously to both Dark and Light themes with vibrant modern colors.
+   ============================================================================= */
+
+.project-tracker-widget {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px 14px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+/* Light Theme Matching: Clean, crisp, light slate surface */
+[data-theme="light"] .project-tracker-widget {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+}
+
+.project-tracker-widget:hover {
+  border-color: rgba(249, 115, 22, 0.4);
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.3), 0 0 16px rgba(249, 115, 22, 0.12);
+}
+
+[data-theme="light"] .project-tracker-widget:hover {
+  border-color: rgba(234, 88, 12, 0.4);
+  box-shadow: 0 6px 20px -2px rgba(15, 23, 42, 0.08), 0 0 14px rgba(234, 88, 12, 0.1);
+}
+
+/* Milestone Header */
+.tracker-milestone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+[data-theme="light"] .tracker-milestone-header {
+  color: #0f172a;
+}
+
+.tracker-milestone-title {
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+[data-theme="light"] .tracker-milestone-title {
+  color: #0f172a;
+}
+
+.tracker-milestone-date {
+  color: #94a3b8;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+[data-theme="light"] .tracker-milestone-date {
+  color: #475569;
+}
+
+/* Milestone Progress Bar: Sleek Metallic Gray Gradient */
+.tracker-milestone-bar-wrap {
+  width: 100%;
+  height: 10px;
+  background: rgba(120, 130, 160, 0.16);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  margin: 3px 0;
+}
+
+[data-theme="light"] .tracker-milestone-bar-wrap {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.tracker-milestone-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #475569 0%, #64748b 50%, #94a3b8 100%);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .tracker-milestone-bar-fill {
+  background: linear-gradient(90deg, #94a3b8 0%, #64748b 50%, #475569 100%);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+}
+
+.tracker-last-build {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+}
+
+[data-theme="light"] .tracker-last-build {
+  color: #64748b;
+}
+
+/* Tech Update Section Header */
+.tracker-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--border);
+}
+
+[data-theme="light"] .tracker-section-header {
+  border-top: 1px dashed #cbd5e1;
+}
+
+.tracker-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+[data-theme="light"] .tracker-section-title {
+  color: #0f172a;
+}
+
+.tracker-tasks-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+[data-theme="light"] .tracker-tasks-label {
+  color: #64748b;
+}
+
+/* Progress Bars Stack */
+.tracker-bars-box {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 3px;
+  margin-top: 4px;
+}
+
+[data-theme="light"] .tracker-bars-box {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+/* Category Progress Rows with Professional Gray Spectrum */
+.tracker-category-row {
+  position: relative;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: all 0.18s ease;
+}
+
+[data-theme="light"] .tracker-category-row {
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+.tracker-category-row:hover {
+  filter: brightness(1.15);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="light"] .tracker-category-row:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.tracker-category-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+  background: linear-gradient(90deg, #475569 0%, #64748b 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Grayscale Theme Spectrum for Dark Mode */
+.tracker-category-row.color-slate .tracker-category-fill,
+.tracker-category-row.color-green .tracker-category-fill {
+  background: linear-gradient(90deg, #475569 0%, #64748b 100%);
+}
+
+.tracker-category-row.color-zinc .tracker-category-fill,
+.tracker-category-row.color-yellow .tracker-category-fill {
+  background: linear-gradient(90deg, #3f3f46 0%, #52525b 100%);
+}
+
+.tracker-category-row.color-steel .tracker-category-fill,
+.tracker-category-row.color-blue .tracker-category-fill {
+  background: linear-gradient(90deg, #334155 0%, #475569 100%);
+}
+
+.tracker-category-row.color-charcoal .tracker-category-fill,
+.tracker-category-row.color-coral .tracker-category-fill {
+  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+}
+
+.tracker-category-row.color-silver .tracker-category-fill,
+.tracker-category-row.color-gray .tracker-category-fill {
+  background: linear-gradient(90deg, #52525b 0%, #71717a 100%);
+}
+
+/* Grayscale Theme Spectrum for Light Mode (Sleek Slate & Charcoal Grays for Crisp White Text) */
+[data-theme="light"] .tracker-category-row.color-slate .tracker-category-fill,
+[data-theme="light"] .tracker-category-row.color-green .tracker-category-fill {
+  background: linear-gradient(90deg, #475569 0%, #64748b 100%);
+}
+
+[data-theme="light"] .tracker-category-row.color-zinc .tracker-category-fill,
+[data-theme="light"] .tracker-category-row.color-yellow .tracker-category-fill {
+  background: linear-gradient(90deg, #3f3f46 0%, #52525b 100%);
+}
+
+[data-theme="light"] .tracker-category-row.color-steel .tracker-category-fill,
+[data-theme="light"] .tracker-category-row.color-blue .tracker-category-fill {
+  background: linear-gradient(90deg, #334155 0%, #475569 100%);
+}
+
+[data-theme="light"] .tracker-category-row.color-charcoal .tracker-category-fill,
+[data-theme="light"] .tracker-category-row.color-coral .tracker-category-fill {
+  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+}
+
+[data-theme="light"] .tracker-category-row.color-silver .tracker-category-fill,
+[data-theme="light"] .tracker-category-row.color-gray .tracker-category-fill {
+  background: linear-gradient(90deg, #52525b 0%, #71717a 100%);
+}
+
+.tracker-category-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="light"] .tracker-category-content {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+}
+
+.tracker-category-name {
+  color: #ffffff !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.1px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.tracker-category-stats {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #ffffff !important;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 1.5px 7px;
+  border-radius: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="light"] .tracker-category-stats {
+  color: #ffffff !important;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 1.5px 7px;
+  border-radius: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Footer Activity */
+.tracker-footer-activity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.tracker-live-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  box-shadow: 0 0 6px rgba(148, 163, 184, 0.6);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+[data-theme="light"] .tracker-live-pulse {
+  background: #64748b;
+  box-shadow: 0 0 6px rgba(100, 116, 139, 0.4);
+}
+
+.tracker-footer-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+[data-theme="light"] .tracker-footer-text {
+  color: #64748b;
+}
+
+/* =============================================================================
+   COMPACT MATRIX MODE (FOR SIDE-BY-SIDE 4-CARD DISPLAY)
+   Clean, light-compatible, perfectly scaled matrix widget.
+   ============================================================================= */
+.project-tracker-widget.is-compact {
+  padding: 12px 14px;
+  margin: 0;
+  gap: 5px;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+[data-theme="light"] .project-tracker-widget.is-compact {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.project-tracker-widget.is-compact .tracker-milestone-header {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.project-tracker-widget.is-compact .tracker-milestone-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68%;
+  font-size: 11.5px;
+}
+
+.project-tracker-widget.is-compact .tracker-milestone-date {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.project-tracker-widget.is-compact .tracker-milestone-bar-wrap {
+  height: 8px;
+  margin: 2px 0 3px;
+}
+
+.project-tracker-widget.is-compact .tracker-last-build {
+  font-size: 10px;
+  margin-bottom: 3px;
+  line-height: 1.1;
+}
+
+.project-tracker-widget.is-compact .tracker-section-header {
+  font-size: 11.5px;
+  padding-top: 4px;
+  margin-top: 2px;
+}
+
+.project-tracker-widget.is-compact .tracker-section-title {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.project-tracker-widget.is-compact .tracker-tasks-label {
+  font-size: 11px;
+}
+
+.project-tracker-widget.is-compact .tracker-bars-box {
+  gap: 2.5px;
+  margin-top: 3px;
+  padding: 2.5px;
+  border-radius: 5px;
+}
+
+.project-tracker-widget.is-compact .tracker-category-row {
+  height: 22px;
+  border-radius: 4px;
+}
+
+.project-tracker-widget.is-compact .tracker-category-content {
+  padding: 0 8px;
+  font-size: 11px;
+}
+
+.project-tracker-widget.is-compact .tracker-category-stats {
+  font-size: 10.5px;
+}
+
+.project-tracker-widget.is-compact .tracker-footer-activity {
+  margin-top: 4px;
+  gap: 6px;
+}
+
+.project-tracker-widget.is-compact .tracker-live-pulse {
+  width: 6px;
+  height: 6px;
+}
+
+.project-tracker-widget.is-compact .tracker-footer-text {
+  font-size: 10.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

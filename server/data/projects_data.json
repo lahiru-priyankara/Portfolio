@@ -1,0 +1,373 @@
+[
+  {
+    "id": "p1",
+    "commit_hash": "4a4a966",
+    "name": "StudyFlow — Student Study Planner",
+    "description": "A full-stack app for managing academic subjects, assignments, and deadlines, with a real-time progress dashboard, a RESTful API on MongoDB, priority-based task management, and dark/light theming.",
+    "stack": [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Tailwind CSS"
+    ],
+    "github_url": "https://github.com/YeshiniWckramasinghe/studyflow",
+    "demo_url": "#",
+    "status": "completed",
+    "start_date": "2024-06-01",
+    "end_date": "2024-11-30",
+    "images": [
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
+    ],
+    "demo_video_url": "https://www.youtube.com/watch?v=E9sd8nk9STY",
+    "tracking_data": {
+      "milestone_title": "47 days until next preview build",
+      "milestone_date": "Nov 30th",
+      "milestone_progress": 55,
+      "last_build": "Sep 30th",
+      "section_title": "Development Sprint - 86%",
+      "total_tasks_label": "670 Tasks",
+      "changes_last_24h": "22 Changes in last 24hrs",
+      "items": [
+        {
+          "name": "Frontend / UI",
+          "current": 196,
+          "total": 197,
+          "unit": "%",
+          "color": "slate"
+        },
+        {
+          "name": "Backend / API",
+          "current": 119,
+          "total": 131,
+          "unit": "%",
+          "color": "steel"
+        },
+        {
+          "name": "Database & Storage",
+          "current": 84,
+          "total": 87,
+          "unit": "%",
+          "color": "zinc"
+        },
+        {
+          "name": "Core Features & Code",
+          "current": 181,
+          "total": 255,
+          "unit": "%",
+          "color": "charcoal"
+        },
+        {
+          "name": "Testing & Bug Fixes",
+          "current": 0,
+          "total": 0,
+          "unit": "Fixed",
+          "color": "silver"
+        }
+      ]
+    },
+    "contributors": [
+      {
+        "username": "YeshiniWckramasinghe",
+        "name": "Yeshini W.",
+        "avatar_url": "https://avatars.githubusercontent.com/u/148785810?v=4",
+        "html_url": "https://github.com/YeshiniWckramasinghe",
+        "contributions": 42
+      },
+      {
+        "username": "kasun-silva",
+        "name": "Kasun Silva",
+        "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+        "html_url": "https://github.com",
+        "contributions": 18
+      }
+    ],
+    "is_featured": true,
+    "sort_order": 1,
+    "updated_at": "2026-10-15T13:55:28.961Z",
+    "last_github_sync_at": "2026-10-15T05:28:21.778Z",
+    "is_published": true,
+    "auto_sync_github": false
+  },
+  {
+    "id": "p2",
+    "commit_hash": "a3f9c1",
+    "name": "Seagills Lanka — Food Delivery System",
+    "description": "A centralized platform to manage all parcel delivery operations — customers place delivery requests and track items in real time, while delivery staff and admins coordinate tasks for faster, accurate service.",
+    "stack": [
+      "MongoDB",
+      "Express",
+      "Angular",
+      "React",
+      "Node.js"
+    ],
+    "github_url": "https://github.com/YeshiniWckramasinghe/Seagills-Lanka-foodDelivery-system",
+    "demo_url": "#",
+    "status": "ongoing",
+    "start_date": "2024-04-15",
+    "end_date": "2024-12-15",
+    "images": [
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1555421689-491a97ff2040?w=800&auto=format&fit=crop&q=80"
+    ],
+    "demo_video_url": "",
+    "tracking_data": {
+      "milestone_title": "0 days until next preview build",
+      "milestone_date": "Dec 15th",
+      "milestone_progress": 95,
+      "last_build": "Dec 2nd",
+      "section_title": "Development Sprint - 75%",
+      "total_tasks_label": "2765 Tasks",
+      "changes_last_24h": "1 Changes in last 24hrs",
+      "items": [
+        {
+          "name": "Frontend / UI",
+          "current": 95,
+          "total": 100,
+          "unit": "%",
+          "color": "slate"
+        },
+        {
+          "name": "Backend / API",
+          "current": 88,
+          "total": 92,
+          "unit": "%",
+          "color": "steel"
+        },
+        {
+          "name": "Database & Storage",
+          "current": 40,
+          "total": 42,
+          "unit": "%",
+          "color": "zinc"
+        },
+        {
+          "name": "Core Features & Code",
+          "current": 30,
+          "total": 50,
+          "unit": "%",
+          "color": "charcoal"
+        },
+        {
+          "name": "Testing & Bug Fixes",
+          "current": 0,
+          "total": 0,
+          "unit": "Fixed",
+          "color": "silver"
+        }
+      ]
+    },
+    "contributors": [
+      {
+        "username": "YeshiniWckramasinghe",
+        "name": "Yeshini W.",
+        "avatar_url": "https://avatars.githubusercontent.com/u/148785810?v=4",
+        "html_url": "https://github.com/YeshiniWckramasinghe",
+        "contributions": 35
+      },
+      {
+        "username": "dineth-perera",
+        "name": "Dineth Perera",
+        "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+        "html_url": "https://github.com",
+        "contributions": 22
+      }
+    ],
+    "is_featured": true,
+    "sort_order": 2,
+    "updated_at": "2026-10-14T21:21:59.798Z"
+  },
+  {
+    "id": "p3",
+    "commit_hash": "7be201",
+    "name": "UniMart — Student Marketplace",
+    "description": "A marketplace where university students can buy and sell items within campus, with listings, search, and messaging between buyers and sellers.",
+    "stack": [
+      "React",
+      "Node.js",
+      "MongoDB"
+    ],
+    "github_url": "https://github.com/YeshiniWckramasinghe/UniMart",
+    "demo_url": "#",
+    "status": "completed",
+    "start_date": "2023-09-01",
+    "end_date": "2024-02-28",
+    "images": [
+      "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&auto=format&fit=crop&q=80"
+    ],
+    "demo_video_url": "",
+    "tracking_data": {
+      "milestone_title": "0 days until next preview build",
+      "milestone_date": "Feb 28th",
+      "milestone_progress": 95,
+      "last_build": "Apr 25th",
+      "section_title": "Development Sprint - 75%",
+      "total_tasks_label": "931 Tasks",
+      "changes_last_24h": "1 Changes in last 24hrs",
+      "items": [
+        {
+          "name": "Frontend / UI",
+          "current": 95,
+          "total": 100,
+          "unit": "%",
+          "color": "green"
+        },
+        {
+          "name": "Backend / API",
+          "current": 88,
+          "total": 92,
+          "unit": "%",
+          "color": "coral"
+        },
+        {
+          "name": "Database & Storage",
+          "current": 40,
+          "total": 42,
+          "unit": "%",
+          "color": "yellow"
+        },
+        {
+          "name": "Core Features & Code",
+          "current": 30,
+          "total": 50,
+          "unit": "%",
+          "color": "blue"
+        },
+        {
+          "name": "Testing & Bug Fixes",
+          "current": 0,
+          "total": 0,
+          "unit": "Fixed",
+          "color": "slate"
+        }
+      ]
+    },
+    "contributors": [
+      {
+        "username": "YeshiniWckramasinghe",
+        "name": "Yeshini W.",
+        "avatar_url": "https://avatars.githubusercontent.com/u/148785810?v=4",
+        "html_url": "https://github.com/YeshiniWckramasinghe",
+        "contributions": 28
+      }
+    ],
+    "is_featured": true,
+    "sort_order": 3,
+    "updated_at": "2026-10-14T21:30:33.498Z"
+  },
+  {
+    "id": "p4",
+    "commit_hash": "d418e7",
+    "name": "Wildlife Safari Management System",
+    "description": "Contributed to requirements analysis and system design — use case diagrams, CRC cards, and class diagrams — and helped build modules for user management, booking, payments, and notifications.",
+    "stack": [
+      "HTML",
+      "CSS",
+      "PHP",
+      "Git",
+      "GitHub"
+    ],
+    "github_url": "https://github.com/YeshiniWckramasinghe/Jungle-Book-Safari-Tours",
+    "demo_url": "#",
+    "status": "completed",
+    "start_date": "2023-03-01",
+    "end_date": "2023-08-15",
+    "images": [
+      "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=800&auto=format&fit=crop&q=80"
+    ],
+    "demo_video_url": "",
+    "tracking_data": {
+      "milestone_title": "47 days until next preview build",
+      "milestone_date": "Nov 30th",
+      "milestone_progress": 55,
+      "last_build": "Sep 30th",
+      "section_title": "Development Sprint - 86%",
+      "total_tasks_label": "670 Tasks",
+      "changes_last_24h": "22 Changes in last 24hrs",
+      "items": [
+        {
+          "name": "Frontend / UI",
+          "current": 196,
+          "total": 197,
+          "unit": "%",
+          "color": "green"
+        },
+        {
+          "name": "Backend / API",
+          "current": 119,
+          "total": 131,
+          "unit": "%",
+          "color": "coral"
+        },
+        {
+          "name": "Database & Storage",
+          "current": 84,
+          "total": 87,
+          "unit": "%",
+          "color": "yellow"
+        },
+        {
+          "name": "Core Features & Code",
+          "current": 181,
+          "total": 255,
+          "unit": "%",
+          "color": "blue"
+        },
+        {
+          "name": "Testing & Bug Fixes",
+          "current": 0,
+          "total": 0,
+          "unit": "Fixed",
+          "color": "slate"
+        }
+      ]
+    },
+    "contributors": [],
+    "is_featured": true,
+    "sort_order": 4,
+    "updated_at": "2026-10-15T04:16:04.015Z"
+  },
+  {
+    "id": "42e7cc9a-ef1d-4ad1-acdb-1d2433b83b8c",
+    "commit_hash": "f02c56",
+    "name": "Rental Vehicle Management System",
+    "description": "Implemented booking management and vehicle maintenance scheduling features, and took part in system testing, debugging, and technical documentation to keep the system reliable.",
+    "stack": [
+      "HTML",
+      "CSS3",
+      "JavaScript",
+      "Java",
+      "MySQL",
+      "Git",
+      "GitHub"
+    ],
+    "github_url": "https://github.com/YeshiniWckramasinghe/DriveSwift-Java-Online-Vehicle-Rental-System-",
+    "demo_url": "#",
+    "status": "completed",
+    "start_date": "2022-10-01",
+    "end_date": "2023-02-20",
+    "images": [
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80"
+    ],
+    "demo_video_url": "",
+    "tracking_data": {},
+    "contributors": [
+      {
+        "username": "YeshiniWckramasinghe",
+        "name": "Yeshini W.",
+        "avatar_url": "https://avatars.githubusercontent.com/u/148785810?v=4",
+        "html_url": "https://github.com/YeshiniWckramasinghe",
+        "contributions": 40
+      }
+    ],
+    "is_featured": true,
+    "sort_order": 5,
+    "created_at": "2026-10-14T13:51:31.94934+00:00",
+    "updated_at": "2026-10-15T05:47:42.913Z",
+    "auto_sync_github": false,
+    "is_published": false,
+    "last_github_sync_at": null
+  }
+]

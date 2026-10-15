@@ -1,0 +1,26 @@
+{
+  "site_name": "yeshini.dev",
+  "browser_title": "Yeshini Wickramasinghe | Full-Stack Developer",
+  "intro_file_tab": "intro.js",
+  "intro_greeting": "Hi, I'm",
+  "hero_name": "Yeshini Wickramasinghe",
+  "hero_headline": "IT Undergraduate & Full-Stack Developer.",
+  "hero_sub_headline": "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+  "code_window_title": "developer.js",
+  "developer_role": "Full-Stack Developer",
+  "developer_stack": [
+    "React",
+    "Node.js",
+    "MongoDB",
+    "Python",
+    "Java"
+  ],
+  "based_in": "Sri Lanka",
+  "is_available": true,
+  "cta_primary_label": "View My Work",
+  "cta_secondary_label": "Contact Me",
+  "avatar_url": "/avatar.jpg",
+  "show_avatar": true,
+  "favicon_url": "/favicon.svg",
+  "updated_at": "2026-10-15T15:39:29.992Z"
+}

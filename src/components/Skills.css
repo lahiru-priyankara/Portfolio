@@ -1,59 +1,308 @@
-.explorer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
+/* =============================================================================
+   SKILLS SECTION (PROFESSIONAL UNBOXED FLOATING 2-ROW ANIMATION)
+   ============================================================================= */
 
-.folder {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 16px 14px;
-}
-
-.folder-name {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--accent-purple);
-  margin-bottom: 12px;
-}
-
-.chevron { color: var(--gutter); }
-
-.file-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.file-item {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-dim);
-  padding: 7px 0 7px 8px;
+/* Category Filter Bar */
+.skills-filter-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 9px;
-  border-radius: 4px;
-  transition: background 0.15s ease, color 0.15s ease;
+  gap: 12px;
+  margin-top: 6px;
+  margin-bottom: 30px;
 }
 
-.file-item:hover {
-  background: var(--surface-2);
+.skills-filter-btn {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skills-filter-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  border-color: var(--accent-orange, #f97316);
   color: var(--text);
 }
 
-.file-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-teal);
-  flex-shrink: 0;
+/* Only clicked / active category tag has the orange background + white text pattern */
+.skills-filter-btn.active {
+  background: #ea580c;
+  color: #ffffff;
+  border-color: #ea580c;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.4);
+  font-weight: 600;
+  transform: scale(1.04);
 }
 
-@media (max-width: 860px) {
-  .explorer { grid-template-columns: repeat(2, 1fr); }
+.skills-filter-btn.active:hover {
+  background: #f97316;
+  color: #ffffff;
+  border-color: #f97316;
+  transform: translateY(-2px) scale(1.06);
 }
-@media (max-width: 520px) {
-  .explorer { grid-template-columns: 1fr; }
+
+/* =============================================================================
+   2-ROW RIGHT-TO-LEFT SLOW STREAM (NO ENCLOSING BOX - FLOATING ON PAGE)
+   ============================================================================= */
+.skills-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin-top: 10px;
+  margin-bottom: 12px;
 }
+
+.skills-marquee-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 24px 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: transparent;
+  border: none;
+  /* Seamless left and right edge gradient fade */
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    transparent 100%
+  );
+}
+
+.marquee-row {
+  width: 100%;
+  overflow: visible;
+  display: flex;
+  background: transparent;
+  padding: 4px 0;
+}
+
+/* Moving conveyor track with slow, smooth pace */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 22px;
+  will-change: transform;
+}
+
+/* Row 1 slow, calm speed */
+.track-speed-1 {
+  animation: marqueeRightToLeft 110s linear infinite;
+}
+
+/* Row 2 slightly offset slow speed for organic parallax flow */
+.track-speed-2 {
+  animation: marqueeRightToLeft 128s linear infinite;
+}
+
+/* Pause smoothly when mouse is hovering anywhere over the stream */
+.skills-marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Right-to-Left Continuous Animation */
+@keyframes marqueeRightToLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* =============================================================================
+   FLOATING MARQUEE CARD STYLING
+   ============================================================================= */
+.marquee-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 22px;
+  min-width: 245px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  transition: border-color 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.2, 0.95, 0.3, 1.15);
+}
+
+.marquee-card:hover {
+  background: var(--surface-2);
+  border-color: var(--accent-orange, #f97316);
+  box-shadow: 0 18px 40px -4px rgba(0, 0, 0, 0.55),
+              0 0 28px var(--accent-orange-glow, rgba(249, 115, 22, 0.3));
+  transform: translateY(-8px) scale(1.06);
+}
+
+.marquee-card:hover .marquee-card-name {
+  color: var(--accent-orange, #f97316);
+}
+
+.marquee-card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marquee-card:hover .marquee-card-icon {
+  transform: scale(1.16) rotate(3deg);
+}
+
+.marquee-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.marquee-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marquee-card-name {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.marquee-card-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+/* Category Accent Badges */
+.cat-frontend {
+  background: rgba(45, 212, 191, 0.12);
+  color: #2dd4bf;
+  border: 1px solid rgba(45, 212, 191, 0.25);
+}
+
+.cat-backend {
+  background: rgba(167, 139, 250, 0.12);
+  color: #c084fc;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+}
+
+.cat-database {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.cat-tools {
+  background: rgba(251, 146, 60, 0.12);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.25);
+}
+
+.cat-design {
+  background: rgba(244, 114, 182, 0.12);
+  color: #f472b6;
+  border: 1px solid rgba(244, 114, 182, 0.25);
+}
+
+.cat-other {
+  background: var(--surface-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.marquee-card-level {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skills-marquee-container {
+    gap: 16px;
+    padding: 10px 0;
+  }
+
+  .marquee-track {
+    gap: 16px;
+  }
+
+  .marquee-card {
+    min-width: 200px;
+    padding: 11px 16px;
+    gap: 12px;
+  }
+
+  .marquee-card-name {
+    font-size: 13.5px;
+  }
+
+  .marquee-card-level {
+    font-size: 11px;
+  }
+}
+
+/* Accessibility / Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+  .skills-marquee-container {
+    overflow-x: auto;
+  }
+}
+
+.skills-filter-btn:hover:not(.active) {
+  border-color: var(--accent-orange, #f97316);
+  color: var(--text);
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.2);
+}
+
+[data-theme="light"] .skills-filter-btn.active {
+  background: #ea580c;
+  color: #ffffff;
+  border-color: #ea580c;
+}
+
+[data-theme="light"] .marquee-card:hover {
+  background: #ffffff;
+  border-color: var(--accent-orange, #ea580c);
+  box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.12),
+              0 0 18px rgba(234, 88, 12, 0.18);
+}
+

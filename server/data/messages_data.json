@@ -1,0 +1,18 @@
+[
+  {
+    "id": "755b90cb-8898-4ee7-87af-62dc202238d0",
+    "name": "lahiru-priyankara",
+    "email": "officiallahiru.p@gmail.com",
+    "message": "Test",
+    "status": "unread",
+    "created_at": "2026-10-15T11:58:29.835766+00:00"
+  },
+  {
+    "id": "d8ffca4c-2e7b-43dc-9d9f-5d934b2ad3ef",
+    "name": "Sarah Connor",
+    "email": "sarah@resistance.org",
+    "message": "Hello, I would like to discuss a web engineering project!",
+    "status": "read",
+    "created_at": "2026-10-15T11:47:28.091935+00:00"
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "8adf1061-49ff-4574-a51a-b4de1b6b4a36",
+    "command": "run website-development",
+    "icon": "globe",
+    "title": "Website Development",
+    "description": "Full websites built from scratch — planning, structure, and code, ready to deploy.",
+    "deliverables": [
+      "Custom Web Apps",
+      "Performance & SEO",
+      "Clean Codebase"
+    ],
+    "is_published": true,
+    "sort_order": 1
+  },
+  {
+    "id": "068e2f6b-580c-4f38-80ec-e5700a3a3f23",
+    "command": "run frontend-development",
+    "icon": "code",
+    "title": "Frontend Development",
+    "description": "Interactive UIs in React or modern JavaScript, built from designs or prototypes with rich micro-animations.",
+    "deliverables": [
+      "React & Modern JS",
+      "Component Systems",
+      "Micro-Interactions"
+    ],
+    "is_published": true,
+    "sort_order": 2
+  },
+  {
+    "id": "335fc607-45df-401e-8b64-a546697cb851",
+    "command": "run bug-fixing",
+    "icon": "wrench",
+    "title": "Bug Fixing & Code QA",
+    "description": "Tracking down and fixing issues in existing codebases, with clear notes on the cause and prevention.",
+    "deliverables": [
+      "Root Cause Analysis",
+      "Code Refactoring",
+      "Regression Testing"
+    ],
+    "is_published": true,
+    "sort_order": 3
+  },
+  {
+    "id": "95c57961-f992-4cd7-9882-086867d90344",
+    "command": "run responsive-design",
+    "icon": "mobile",
+    "title": "Responsive Web Design",
+    "description": "Layouts that work cleanly on mobile, tablet, and desktop — no breakpoints left behind.",
+    "deliverables": [
+      "Mobile-First Layouts",
+      "Fluid Breakpoints",
+      "Cross-Browser QA"
+    ],
+    "is_published": true,
+    "sort_order": 4
+  },
+  {
+    "id": "55a6f9ea-ff84-4ae8-8f2f-5fe3275076a6",
+    "command": "run api-integration",
+    "icon": "api",
+    "title": "API & Backend Integration",
+    "description": "Connecting your app to third-party APIs, building RESTful endpoints, and handling secure data flows.",
+    "deliverables": [
+      "REST & Webhooks",
+      "Auth & JWT Tokens",
+      "Schema Validation"
+    ],
+    "is_published": true,
+    "sort_order": 5
+  },
+  {
+    "id": "7e850af0-9dd8-4d1d-beda-516cd097f860",
+    "command": "run database-architecture",
+    "icon": "database",
+    "title": "Database Architecture",
+    "description": "Designing efficient schemas, indexing strategies, and reliable database operations in MongoDB & SQL.",
+    "deliverables": [
+      "Schema Architecture",
+      "Query Optimization",
+      "Data Integrity"
+    ],
+    "is_published": true,
+    "sort_order": 6
+  }
+]
