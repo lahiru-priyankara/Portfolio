@@ -64,13 +64,15 @@ app.use((req, res) => {
 // Centralized Error Handling
 app.use(errorHandler);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`===============================================`);
-  console.log(`🚀 Portfolio Backend Server running on port ${PORT}`);
-  console.log(`📡 Health Check: http://localhost:${PORT}/health`);
-  console.log(`🌐 API Endpoint: http://localhost:${PORT}/api`);
-  console.log(`===============================================`);
-});
+// Start Server (only when not running inside Vercel serverless environment)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`===============================================`);
+    console.log(`🚀 Portfolio Backend Server running on port ${PORT}`);
+    console.log(`📡 Health Check: http://localhost:${PORT}/health`);
+    console.log(`🌐 API Endpoint: http://localhost:${PORT}/api`);
+    console.log(`===============================================`);
+  });
+}
 
 export default app;
