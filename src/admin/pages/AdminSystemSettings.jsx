@@ -146,7 +146,18 @@ export default function AdminSystemSettings() {
     try {
       const res = await portfolioApi.updateSettings(payload);
       if (res.success) {
-        updateSettingsLocally(payload);
+        // Use the server-returned data which has permanent URLs (not base64)
+        const savedData = res.data || payload;
+        updateSettingsLocally(savedData);
+
+        // Update form with permanent URLs returned from server
+        if (savedData.favicon_url && savedData.favicon_url !== form.favicon_url) {
+          setForm((prev) => ({ ...prev, favicon_url: savedData.favicon_url }));
+        }
+        if (savedData.avatar_url && savedData.avatar_url !== form.avatar_url) {
+          setForm((prev) => ({ ...prev, avatar_url: savedData.avatar_url }));
+        }
+
         setSuccessMsg("System & Intro settings saved and applied successfully!");
         toast.success("System & Intro settings saved and applied successfully!");
         setTimeout(() => setSuccessMsg(""), 4500);

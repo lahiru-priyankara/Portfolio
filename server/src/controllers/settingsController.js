@@ -28,6 +28,102 @@ const DEFAULT_SETTINGS = {
   favicon_url: "/favicon.svg",
 };
 
+const STORAGE_BUCKET = "site-assets";
+
+/**
+ * Upload a base64 data URL to Supabase Storage and return the permanent public URL.
+ * If the value is not a data URL, returns it as-is.
+ */
+async function uploadBase64ToStorage(base64DataUrl, fileName) {
+  if (!base64DataUrl || !base64DataUrl.startsWith("data:")) {
+    return base64DataUrl; // Not a data URL, return as-is (already a URL or path)
+  }
+
+  try {
+    // Parse the data URL: data:image/png;base64,iVBOR...
+    const matches = base64DataUrl.match(/^data:([^;]+);base64,(.+)$/);
+    if (!matches) return base64DataUrl;
+
+    const mimeType = matches[1];
+    const base64Data = matches[2];
+    const buffer = Buffer.from(base64Data, "base64");
+
+    // Determine file extension from mime type
+    const extMap = {
+      "image/png": "png",
+      "image/jpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/svg+xml": "svg",
+      "image/x-icon": "ico",
+      "image/vnd.microsoft.icon": "ico",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    };
+    const ext = extMap[mimeType] || "png";
+    const storagePath = `${fileName}-${Date.now()}.${ext}`;
+
+    // Ensure the storage bucket exists
+    try {
+      const { data: buckets } = await supabaseAdmin.storage.listBuckets();
+      const bucketExists = buckets?.some((b) => b.name === STORAGE_BUCKET);
+      if (!bucketExists) {
+        await supabaseAdmin.storage.createBucket(STORAGE_BUCKET, {
+          public: true,
+          allowedMimeTypes: ["image/*"],
+          fileSizeLimit: 5 * 1024 * 1024, // 5MB
+        });
+      }
+    } catch {
+      // Bucket may already exist, continue
+    }
+
+    // Delete any previous favicon files to keep storage clean
+    try {
+      const { data: existingFiles } = await supabaseAdmin.storage
+        .from(STORAGE_BUCKET)
+        .list("", { search: fileName });
+      if (existingFiles?.length) {
+        const filesToRemove = existingFiles
+          .filter((f) => f.name.startsWith(fileName))
+          .map((f) => f.name);
+        if (filesToRemove.length) {
+          await supabaseAdmin.storage.from(STORAGE_BUCKET).remove(filesToRemove);
+        }
+      }
+    } catch {
+      // Ignore cleanup errors
+    }
+
+    // Upload the file
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .upload(storagePath, buffer, {
+        contentType: mimeType,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.warn("Failed to upload to Supabase Storage:", uploadError.message);
+      return base64DataUrl; // Fallback to base64
+    }
+
+    // Get the public URL
+    const { data: publicUrlData } = supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(storagePath);
+
+    if (publicUrlData?.publicUrl) {
+      console.log(`✅ Uploaded ${fileName} to Supabase Storage: ${publicUrlData.publicUrl}`);
+      return publicUrlData.publicUrl;
+    }
+
+    return base64DataUrl; // Fallback
+  } catch (err) {
+    console.warn("Storage upload error:", err.message);
+    return base64DataUrl; // Fallback to base64
+  }
+}
+
 function readLocalSettings() {
   try {
     if (fs.existsSync(SETTINGS_FILE)) {
@@ -57,8 +153,9 @@ export async function getSettings(req, res, next) {
   try {
     const local = readLocalSettings();
     const dbSettings = {};
+    const siteSettings = {};
 
-    // Check if site_settings table exists in Supabase
+    // Check if site_settings table exists in Supabase (highest priority for settings like favicon)
     try {
       const { data, error } = await supabase
         .from("site_settings")
@@ -66,7 +163,7 @@ export async function getSettings(req, res, next) {
         .limit(1)
         .single();
       if (!error && data) {
-        Object.assign(dbSettings, data);
+        Object.assign(siteSettings, data);
       }
     } catch {
       // site_settings table not yet created
@@ -91,11 +188,18 @@ export async function getSettings(req, res, next) {
       // ignore
     }
 
+    // Merge order: defaults → local file → profiles → site_settings (highest priority)
+    // site_settings is last so uploaded favicon_url always wins
     const merged = {
       ...DEFAULT_SETTINGS,
       ...local,
       ...dbSettings,
+      ...siteSettings,
     };
+
+    // Clean up: remove Supabase internal fields from response
+    delete merged.id;
+    delete merged.created_at;
 
     return res.json({
       success: true,
@@ -114,6 +218,14 @@ export async function updateSettings(req, res, next) {
     const incoming = req.body || {};
     const local = readLocalSettings();
 
+    // Upload base64 images to Supabase Storage for permanent URLs
+    if (incoming.favicon_url && incoming.favicon_url.startsWith("data:")) {
+      incoming.favicon_url = await uploadBase64ToStorage(incoming.favicon_url, "favicon");
+    }
+    if (incoming.avatar_url && incoming.avatar_url.startsWith("data:")) {
+      incoming.avatar_url = await uploadBase64ToStorage(incoming.avatar_url, "avatar");
+    }
+
     const updated = {
       ...DEFAULT_SETTINGS,
       ...local,
@@ -125,6 +237,11 @@ export async function updateSettings(req, res, next) {
     writeLocalSettings(updated);
 
     // 2. Attempt to save to Supabase site_settings table if it exists
+    // Prepare a clean payload without internal Supabase fields
+    const siteSettingsPayload = { ...updated };
+    delete siteSettingsPayload.id;
+    delete siteSettingsPayload.created_at;
+
     try {
       const { data: existingSite } = await supabaseAdmin
         .from("site_settings")
@@ -135,10 +252,10 @@ export async function updateSettings(req, res, next) {
       if (existingSite) {
         await supabaseAdmin
           .from("site_settings")
-          .update(updated)
+          .update(siteSettingsPayload)
           .eq("id", existingSite.id);
       } else {
-        await supabaseAdmin.from("site_settings").insert([updated]);
+        await supabaseAdmin.from("site_settings").insert([siteSettingsPayload]);
       }
     } catch {
       // Table might not exist yet, which is fine
