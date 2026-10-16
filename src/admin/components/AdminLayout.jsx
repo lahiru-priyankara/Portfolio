@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAdminAuth } from "../context/useAdminAuth";
+import { usePortfolio } from "../../context/usePortfolio";
 import AdminNav from "./AdminNav";
 import AdminLogin from "../pages/AdminLogin";
 import AdminDashboard from "../pages/AdminDashboard";
@@ -16,7 +17,17 @@ import "../admin.css";
 
 export default function AdminLayout({ onExitAdmin }) {
   const { isAuthenticated, loading } = useAdminAuth();
+  const { refreshAll } = usePortfolio();
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  const handleExit = () => {
+    if (typeof refreshAll === "function") {
+      refreshAll();
+    }
+    if (typeof onExitAdmin === "function") {
+      onExitAdmin();
+    }
+  };
 
   if (loading) {
     return (
@@ -31,7 +42,7 @@ export default function AdminLayout({ onExitAdmin }) {
   if (!isAuthenticated) {
     return (
       <ToastProvider>
-        <AdminLogin onExit={onExitAdmin} />
+        <AdminLogin onExit={handleExit} />
       </ToastProvider>
     );
   }
@@ -43,7 +54,7 @@ export default function AdminLayout({ onExitAdmin }) {
           <AdminNav
             activeTab={activeTab}
             onSelectTab={setActiveTab}
-            onExitAdmin={onExitAdmin}
+            onExitAdmin={handleExit}
           />
 
           <main style={{ flex: 1 }}>

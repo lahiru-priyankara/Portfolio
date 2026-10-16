@@ -264,16 +264,43 @@ export async function getProjects(req, res, next) {
 
       if (!error && Array.isArray(data) && data.length > 0) {
         // Merge Supabase data with local projects to ensure live metrics, commit hash & media are accurate
+        let hasLocalIdUpdates = false;
         const merged = data.map((sp) => {
           const lp = localProjects.find(
             (p) =>
               String(p.id) === String(sp.id) ||
               p.commit_hash === sp.commit_hash ||
-              p.name === sp.name ||
+              p.name?.toLowerCase() === sp.name?.toLowerCase() ||
               (p.github_url && sp.github_url && p.github_url.toLowerCase() === sp.github_url.toLowerCase())
           );
+
+          if (lp && lp.id !== sp.id) {
+            lp.id = sp.id;
+            hasLocalIdUpdates = true;
+          }
+
+          // Prioritize direct column, then tracking_data, then local, then default true
+          const isPublished =
+            sp.is_published !== undefined && sp.is_published !== null
+              ? Boolean(sp.is_published)
+              : sp.tracking_data?.is_published !== undefined
+              ? Boolean(sp.tracking_data.is_published)
+              : lp?.is_published !== undefined
+              ? Boolean(lp.is_published)
+              : true;
+
+          const autoSync =
+            sp.auto_sync_github !== undefined && sp.auto_sync_github !== null
+              ? Boolean(sp.auto_sync_github)
+              : sp.tracking_data?.auto_sync_github !== undefined
+              ? Boolean(sp.tracking_data.auto_sync_github)
+              : lp?.auto_sync_github !== undefined
+              ? Boolean(lp.auto_sync_github)
+              : false;
+
           return {
             ...sp,
+            id: sp.id, // Supabase UUID is always authoritative
             commit_hash: lp?.commit_hash || sp.commit_hash,
             status: sp.status || lp?.status || "completed",
             start_date: sp.start_date || lp?.start_date || "",
@@ -282,37 +309,32 @@ export async function getProjects(req, res, next) {
             demo_video_url: sp.demo_video_url || lp?.demo_video_url || "",
             tracking_data:
               lp?.tracking_data && Object.keys(lp.tracking_data).length > 0
-                ? lp.tracking_data
+                ? { ...lp.tracking_data, is_published: isPublished, auto_sync_github: autoSync }
                 : sp.tracking_data && Object.keys(sp.tracking_data).length > 0
-                ? sp.tracking_data
-                : {},
+                ? { ...sp.tracking_data, is_published: isPublished, auto_sync_github: autoSync }
+                : { is_published: isPublished, auto_sync_github: autoSync },
             contributors:
               Array.isArray(lp?.contributors) && lp.contributors.length > 0
                 ? lp.contributors
                 : Array.isArray(sp.contributors) && sp.contributors.length > 0
                 ? sp.contributors
                 : [],
-            auto_sync_github:
-              lp?.auto_sync_github !== undefined
-                ? lp.auto_sync_github
-                : sp.auto_sync_github !== undefined
-                ? sp.auto_sync_github
-                : false,
-            is_published:
-              lp?.is_published !== undefined
-                ? lp.is_published
-                : sp.is_published !== undefined
-                ? sp.is_published
-                : true,
+            auto_sync_github: autoSync,
+            is_published: isPublished,
             last_github_sync_at: lp?.last_github_sync_at || sp.last_github_sync_at || null,
           };
         });
+
+        if (hasLocalIdUpdates) {
+          writeLocalProjects(localProjects);
+        }
+
         const showAll = req.query.all === "true" || Boolean(req.headers.authorization);
         const filteredMerged = showAll ? merged : merged.filter((p) => p.is_published !== false);
         return res.json({ success: true, data: filteredMerged });
       }
-    } catch {
-      // Supabase unavailable or table empty
+    } catch (dbErr) {
+      console.warn("Supabase getProjects error:", dbErr.message);
     }
 
     const showAll = req.query.all === "true" || Boolean(req.headers.authorization);
@@ -363,8 +385,8 @@ export async function createProject(req, res, next) {
     const newProject = {
       id: "p_" + Date.now(),
       commit_hash: commit_hash || Math.random().toString(16).substring(2, 8),
-      name,
-      description,
+      name: name.trim(),
+      description: description.trim(),
       stack: Array.isArray(stack) ? stack : [],
       github_url: github_url || "#",
       demo_url: demo_url || "#",
@@ -373,11 +395,15 @@ export async function createProject(req, res, next) {
       end_date: end_date || "",
       images: Array.isArray(images) ? images : [],
       demo_video_url: demo_video_url || "",
-      tracking_data: tracking_data || {},
+      tracking_data: {
+        ...(tracking_data || {}),
+        is_published: isPublished,
+        auto_sync_github,
+      },
       contributors: Array.isArray(contributors) ? contributors : [],
       auto_sync_github,
       is_published: isPublished,
-      sort_order: sort_order ?? 0,
+      sort_order: Number(sort_order) || 0,
       is_featured: is_featured ?? true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -392,12 +418,7 @@ export async function createProject(req, res, next) {
       }
     }
 
-    // Save to local file
-    const currentList = readLocalProjects();
-    currentList.push(newProject);
-    writeLocalProjects(currentList);
-
-    // Try saving to Supabase
+    // Try saving to Supabase first to get real UUID
     try {
       const payload = {
         commit_hash: newProject.commit_hash,
@@ -413,37 +434,30 @@ export async function createProject(req, res, next) {
         demo_video_url: newProject.demo_video_url,
         tracking_data: newProject.tracking_data,
         contributors: newProject.contributors,
-        auto_sync_github: newProject.auto_sync_github,
         sort_order: newProject.sort_order,
         is_featured: newProject.is_featured,
+        is_published: newProject.is_published,
+        auto_sync_github: newProject.auto_sync_github,
       };
 
       const { data, error } = await supabaseAdmin.from("projects").insert([payload]).select().single();
       if (error && (error.code === "42703" || error.message?.includes("column"))) {
-        // Fallback for base columns if schema hasn't migrated yet
-        const { data: baseData } = await supabaseAdmin
-          .from("projects")
-          .insert([
-            {
-              commit_hash: newProject.commit_hash,
-              name: newProject.name,
-              description: newProject.description,
-              stack: newProject.stack,
-              github_url: newProject.github_url,
-              demo_url: newProject.demo_url,
-              sort_order: newProject.sort_order,
-              is_featured: newProject.is_featured,
-            },
-          ])
-          .select()
-          .single();
+        // Fallback omitting is_published and auto_sync_github columns (preserved inside tracking_data JSONB)
+        delete payload.is_published;
+        delete payload.auto_sync_github;
+        const { data: baseData } = await supabaseAdmin.from("projects").insert([payload]).select().single();
         if (baseData) newProject.id = baseData.id;
       } else if (data) {
         newProject.id = data.id;
       }
-    } catch {
-      // Supabase optional
+    } catch (dbErr) {
+      console.warn("Supabase project insert failed, saving locally:", dbErr.message);
     }
+
+    // Save to local file with authoritative ID
+    const currentList = readLocalProjects();
+    currentList.push(newProject);
+    writeLocalProjects(currentList);
 
     return res.status(201).json({
       success: true,
@@ -462,9 +476,15 @@ export async function updateProject(req, res, next) {
   try {
     const { id } = req.params;
     const currentList = readLocalProjects();
+    let updatedItem = null;
 
     const updatedList = currentList.map((p) => {
-      if (String(p.id) === String(id) || p.commit_hash === req.body.commit_hash) {
+      const isMatch =
+        String(p.id) === String(id) ||
+        (req.body.commit_hash && p.commit_hash === req.body.commit_hash) ||
+        (req.body.name && p.name?.toLowerCase() === req.body.name?.toLowerCase());
+
+      if (isMatch) {
         const autoSync =
           req.body.auto_sync_github !== undefined
             ? Boolean(req.body.auto_sync_github)
@@ -475,23 +495,46 @@ export async function updateProject(req, res, next) {
             ? Boolean(req.body.is_published)
             : (p.is_published !== undefined ? p.is_published : true);
 
-        return {
+        const trackingData = {
+          ...(req.body.tracking_data !== undefined ? req.body.tracking_data : p.tracking_data || {}),
+          is_published: isPublished,
+          auto_sync_github: autoSync,
+        };
+
+        updatedItem = {
           ...p,
           ...req.body,
+          id: p.id || id,
           auto_sync_github: autoSync,
           is_published: isPublished,
           stack: Array.isArray(req.body.stack) ? req.body.stack : p.stack,
           images: Array.isArray(req.body.images) ? req.body.images : p.images,
-          tracking_data: req.body.tracking_data !== undefined ? req.body.tracking_data : p.tracking_data,
+          tracking_data: trackingData,
           contributors: Array.isArray(req.body.contributors) ? req.body.contributors : (p.contributors || []),
           updated_at: new Date().toISOString(),
         };
+        return updatedItem;
       }
       return p;
     });
 
+    if (!updatedItem) {
+      updatedItem = {
+        id,
+        ...req.body,
+        is_published: req.body.is_published !== undefined ? Boolean(req.body.is_published) : true,
+        auto_sync_github: Boolean(req.body.auto_sync_github),
+        tracking_data: {
+          ...(req.body.tracking_data || {}),
+          is_published: req.body.is_published !== undefined ? Boolean(req.body.is_published) : true,
+          auto_sync_github: Boolean(req.body.auto_sync_github),
+        },
+        updated_at: new Date().toISOString(),
+      };
+      updatedList.push(updatedItem);
+    }
+
     // If auto_sync_github is enabled and has a valid github_url, immediately sync fresh commit and metrics
-    const updatedItem = updatedList.find((p) => String(p.id) === String(id)) || req.body;
     if (updatedItem?.auto_sync_github && updatedItem.github_url && updatedItem.github_url.includes("github.com/")) {
       try {
         await syncSingleProjectGithub(updatedItem);
@@ -504,26 +547,57 @@ export async function updateProject(req, res, next) {
 
     // Try updating Supabase
     try {
-      const updates = {
-        ...req.body,
+      const payload = {
+        name: updatedItem.name,
+        description: updatedItem.description,
+        commit_hash: updatedItem.commit_hash,
+        stack: updatedItem.stack || [],
+        github_url: updatedItem.github_url || "#",
+        demo_url: updatedItem.demo_url || "#",
+        status: updatedItem.status || "completed",
+        start_date: updatedItem.start_date || "",
+        end_date: updatedItem.end_date || "",
+        images: updatedItem.images || [],
+        demo_video_url: updatedItem.demo_video_url || "",
+        tracking_data: updatedItem.tracking_data || {},
+        contributors: updatedItem.contributors || [],
+        is_featured: updatedItem.is_featured !== false,
+        sort_order: Number(updatedItem.sort_order) || 0,
+        is_published: updatedItem.is_published,
+        auto_sync_github: updatedItem.auto_sync_github,
         updated_at: new Date().toISOString(),
       };
-      const { error } = await supabaseAdmin.from("projects").update(updates).eq("id", id);
-      if (error && (error.code === "42703" || error.message?.includes("column"))) {
-        // Fallback for base columns
-        const baseUpdates = {
-          name: req.body.name,
-          description: req.body.description,
-          stack: req.body.stack,
-          github_url: req.body.github_url,
-          demo_url: req.body.demo_url,
-          sort_order: req.body.sort_order,
-          updated_at: new Date().toISOString(),
-        };
-        await supabaseAdmin.from("projects").update(baseUpdates).eq("id", id);
+
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+      if (isUUID) {
+        let { error } = await supabaseAdmin.from("projects").update(payload).eq("id", id);
+        if (error && (error.code === "42703" || error.message?.includes("column"))) {
+          delete payload.is_published;
+          delete payload.auto_sync_github;
+          await supabaseAdmin.from("projects").update(payload).eq("id", id);
+        }
+      } else {
+        // If not UUID, match by commit_hash or name
+        let { error, count } = await supabaseAdmin.from("projects").update(payload).eq("commit_hash", updatedItem.commit_hash);
+        if (error || count === 0) {
+          const nameRes = await supabaseAdmin.from("projects").update(payload).eq("name", updatedItem.name);
+          if (nameRes.error || nameRes.count === 0) {
+            // Not in DB yet, insert
+            delete payload.is_published;
+            delete payload.auto_sync_github;
+            const { data: inserted } = await supabaseAdmin.from("projects").insert([payload]).select().single();
+            if (inserted?.id) {
+              updatedItem.id = inserted.id;
+              const idx = updatedList.findIndex((p) => p.commit_hash === updatedItem.commit_hash);
+              if (idx >= 0) updatedList[idx].id = inserted.id;
+              writeLocalProjects(updatedList);
+            }
+          }
+        }
       }
-    } catch {
-      // Ignore
+    } catch (dbErr) {
+      console.warn("Supabase project update notice:", dbErr.message);
     }
 
     return res.json({
@@ -547,11 +621,22 @@ export async function togglePublishProject(req, res, next) {
     let updatedItem = null;
 
     const updatedList = currentList.map((p) => {
-      if (String(p.id) === String(id) || p.commit_hash === req.body.commit_hash) {
+      const isMatch =
+        String(p.id) === String(id) ||
+        p.commit_hash === id ||
+        (req.body.commit_hash && p.commit_hash === req.body.commit_hash) ||
+        (req.body.name && p.name === req.body.name);
+
+      if (isMatch) {
         const nextVal = is_published !== undefined ? Boolean(is_published) : !p.is_published;
+        const trackingData = {
+          ...(p.tracking_data || {}),
+          is_published: nextVal,
+        };
         updatedItem = {
           ...p,
           is_published: nextVal,
+          tracking_data: trackingData,
           updated_at: new Date().toISOString(),
         };
         return updatedItem;
@@ -560,18 +645,67 @@ export async function togglePublishProject(req, res, next) {
     });
 
     if (!updatedItem) {
+      // Find in Supabase directly
+      try {
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        if (isUUID) {
+          const { data: dbProj } = await supabaseAdmin.from("projects").select("*").eq("id", id).maybeSingle();
+          if (dbProj) {
+            const nextVal = is_published !== undefined ? Boolean(is_published) : !(dbProj.tracking_data?.is_published !== false);
+            updatedItem = {
+              ...dbProj,
+              is_published: nextVal,
+              tracking_data: { ...(dbProj.tracking_data || {}), is_published: nextVal },
+              updated_at: new Date().toISOString(),
+            };
+            updatedList.push(updatedItem);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!updatedItem) {
       return res.status(404).json({ success: false, error: "Project not found" });
     }
 
     writeLocalProjects(updatedList);
 
+    // Sync to Supabase
     try {
-      await supabaseAdmin
-        .from("projects")
-        .update({ is_published: updatedItem.is_published, updated_at: new Date().toISOString() })
-        .eq("id", id);
-    } catch {
-      // Supabase column optional
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        const { error } = await supabaseAdmin
+          .from("projects")
+          .update({
+            is_published: updatedItem.is_published,
+            tracking_data: updatedItem.tracking_data,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", id);
+
+        if (error && (error.code === "42703" || error.message?.includes("column"))) {
+          // If is_published column doesn't exist, tracking_data stores it safely
+          await supabaseAdmin
+            .from("projects")
+            .update({
+              tracking_data: updatedItem.tracking_data,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", id);
+        }
+      } else {
+        await supabaseAdmin
+          .from("projects")
+          .update({
+            tracking_data: updatedItem.tracking_data,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("commit_hash", updatedItem.commit_hash);
+      }
+    } catch (dbErr) {
+      console.warn("Supabase toggle publish notice:", dbErr.message);
     }
 
     return res.json({
@@ -591,13 +725,23 @@ export async function deleteProject(req, res, next) {
   try {
     const { id } = req.params;
     const currentList = readLocalProjects();
-    const updatedList = currentList.filter((p) => String(p.id) !== String(id));
+    const target = currentList.find((p) => String(p.id) === String(id) || p.commit_hash === id);
+    const updatedList = currentList.filter(
+      (p) => String(p.id) !== String(id) && p.commit_hash !== id && (target ? p.name !== target.name : true)
+    );
     writeLocalProjects(updatedList);
 
     try {
-      await supabaseAdmin.from("projects").delete().eq("id", id);
-    } catch {
-      // Ignore
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin.from("projects").delete().eq("id", id);
+      } else if (target?.commit_hash) {
+        await supabaseAdmin.from("projects").delete().eq("commit_hash", target.commit_hash);
+      } else if (target?.name) {
+        await supabaseAdmin.from("projects").delete().eq("name", target.name);
+      }
+    } catch (dbErr) {
+      console.warn("Supabase delete project notice:", dbErr.message);
     }
 
     return res.json({

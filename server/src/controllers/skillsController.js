@@ -128,12 +128,7 @@ export async function createSkill(req, res, next) {
       created_at: new Date().toISOString(),
     };
 
-    // Save locally
-    const currentList = readLocalSkills();
-    const updatedList = [...currentList, newSkill];
-    writeLocalSkills(updatedList);
-
-    // Sync to Supabase
+    // Sync to Supabase first to obtain authoritative UUID
     try {
       const { data, error } = await supabaseAdmin
         .from("skills")
@@ -142,6 +137,7 @@ export async function createSkill(req, res, next) {
             category: newSkill.category,
             name: newSkill.name,
             icon: newSkill.icon,
+            level: newSkill.level,
             sort_order: newSkill.sort_order,
           },
         ])
@@ -149,7 +145,7 @@ export async function createSkill(req, res, next) {
         .single();
 
       if (error && (error.code === "42703" || error.message?.includes("column"))) {
-        // Fallback without icon column
+        // Fallback without icon / level column if older schema
         const { data: fbData } = await supabaseAdmin
           .from("skills")
           .insert([
@@ -161,15 +157,20 @@ export async function createSkill(req, res, next) {
           ])
           .select()
           .single();
-        if (fbData) {
+        if (fbData?.id) {
           newSkill.id = fbData.id;
         }
-      } else if (data) {
+      } else if (data?.id) {
         newSkill.id = data.id;
       }
     } catch (dbErr) {
       console.warn("Supabase skill create failed, local saved:", dbErr.message);
     }
+
+    // Save locally with matching ID
+    const currentList = readLocalSkills();
+    const updatedList = [...currentList, newSkill];
+    writeLocalSkills(updatedList);
 
     return res.status(201).json({
       success: true,
@@ -190,51 +191,71 @@ export async function updateSkill(req, res, next) {
     const { category, name, sort_order, icon, level } = req.body;
 
     const currentList = readLocalSkills();
+    let updatedSkill = null;
+
     const updatedList = currentList.map((s) => {
-      if (String(s.id) === String(id) || s.name === name) {
-        return {
+      if (String(s.id) === String(id) || (name && s.name.toLowerCase() === name.toLowerCase())) {
+        updatedSkill = {
           ...s,
+          id: s.id || id,
           category: category ? category.trim() : s.category,
           name: name ? name.trim() : s.name,
           icon: icon !== undefined ? icon.trim() : s.icon,
           level: level !== undefined ? level.trim() : s.level,
           sort_order: sort_order !== undefined ? Number(sort_order) : s.sort_order,
         };
+        return updatedSkill;
       }
       return s;
     });
-    writeLocalSkills(updatedList);
 
-    // Sync to Supabase if valid UUID
-    try {
-      const payload = { category, name, sort_order: Number(sort_order) || 0 };
-      if (icon !== undefined) payload.icon = icon;
-
-      const { error } = await supabaseAdmin
-        .from("skills")
-        .update(payload)
-        .eq("id", id)
-        .select()
-        .single();
-
-      if (error && (error.code === "42703" || error.message?.includes("column"))) {
-        await supabaseAdmin
-          .from("skills")
-          .update({ category, name, sort_order: Number(sort_order) || 0 })
-          .eq("id", id);
-      }
-    } catch {
-      // ignore
+    if (!updatedSkill) {
+      updatedSkill = {
+        id,
+        category: (category || "tools/").trim(),
+        name: (name || "").trim(),
+        icon: (icon || "").trim(),
+        level: (level || "").trim(),
+        sort_order: Number(sort_order) || 0,
+      };
+      updatedList.push(updatedSkill);
     }
 
-    const updatedSkill = updatedList.find((s) => String(s.id) === String(id)) || {
-      id,
-      category,
-      name,
-      icon,
-      level,
-      sort_order,
-    };
+    writeLocalSkills(updatedList);
+
+    // Sync to Supabase
+    try {
+      const payload = {
+        category: updatedSkill.category,
+        name: updatedSkill.name,
+        icon: updatedSkill.icon,
+        level: updatedSkill.level,
+        sort_order: Number(updatedSkill.sort_order) || 0,
+      };
+
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+      if (isUUID) {
+        const { error } = await supabaseAdmin.from("skills").update(payload).eq("id", id);
+        if (error && (error.code === "42703" || error.message?.includes("column"))) {
+          delete payload.level;
+          await supabaseAdmin.from("skills").update(payload).eq("id", id);
+        }
+      } else {
+        const { error, count } = await supabaseAdmin.from("skills").update(payload).eq("name", updatedSkill.name);
+        if (error || count === 0) {
+          const { data: inserted } = await supabaseAdmin.from("skills").insert([payload]).select().single();
+          if (inserted?.id) {
+            updatedSkill.id = inserted.id;
+            const idx = updatedList.findIndex((s) => s.name === updatedSkill.name);
+            if (idx >= 0) updatedList[idx].id = inserted.id;
+            writeLocalSkills(updatedList);
+          }
+        }
+      }
+    } catch (dbErr) {
+      console.warn("Supabase skill update notice:", dbErr.message);
+    }
 
     return res.json({
       success: true,
@@ -254,13 +275,21 @@ export async function deleteSkill(req, res, next) {
     const { id } = req.params;
 
     const currentList = readLocalSkills();
-    const updatedList = currentList.filter((s) => String(s.id) !== String(id));
+    const target = currentList.find((s) => String(s.id) === String(id));
+    const updatedList = currentList.filter(
+      (s) => String(s.id) !== String(id) && (target ? s.name !== target.name : true)
+    );
     writeLocalSkills(updatedList);
 
     try {
-      await supabaseAdmin.from("skills").delete().eq("id", id);
-    } catch {
-      // ignore
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin.from("skills").delete().eq("id", id);
+      } else if (target?.name) {
+        await supabaseAdmin.from("skills").delete().eq("name", target.name);
+      }
+    } catch (dbErr) {
+      console.warn("Supabase delete skill notice:", dbErr.message);
     }
 
     return res.json({

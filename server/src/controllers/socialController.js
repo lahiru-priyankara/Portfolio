@@ -61,15 +61,56 @@ async function syncToSupabaseProfile(platform, url, displayValue) {
 /**
  * Get all social links (public or ?all=true for admin)
  */
+/**
+ * Get all social links (public or ?all=true for admin)
+ */
 export async function getSocialLinks(req, res, next) {
   try {
-    const links = readLocalSocialLinks();
+    const localLinks = readLocalSocialLinks();
     const showAll = req.query.all === "true" || Boolean(req.headers.authorization);
 
-    const filtered = showAll
-      ? links
-      : links.filter((l) => l.is_active !== false);
+    try {
+      const { data, error } = await supabaseAdmin
+        .from("social_links")
+        .select("*")
+        .order("sort_order", { ascending: true });
 
+      if (!error && Array.isArray(data) && data.length > 0) {
+        // Merge Supabase with local data
+        const merged = data.map((dbLink) => {
+          const loc = localLinks.find(
+            (l) => String(l.id) === String(dbLink.id) || l.platform === dbLink.platform
+          );
+          return {
+            ...dbLink,
+            id: dbLink.id,
+            display_value: dbLink.display_value || loc?.display_value || dbLink.url,
+            category: dbLink.category || loc?.category || "social",
+            is_active:
+              dbLink.is_active !== undefined
+                ? Boolean(dbLink.is_active)
+                : loc?.is_active !== undefined
+                ? Boolean(loc.is_active)
+                : true,
+          };
+        });
+
+        // Add any local links not in Supabase yet
+        for (const loc of localLinks) {
+          if (!merged.some((m) => String(m.id) === String(loc.id) || m.platform === loc.platform)) {
+            merged.push(loc);
+          }
+        }
+
+        const filtered = showAll ? merged : merged.filter((l) => l.is_active !== false);
+        filtered.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+        return res.json({ success: true, data: filtered });
+      }
+    } catch {
+      // Supabase table not created yet, fall through to local
+    }
+
+    const filtered = showAll ? localLinks : localLinks.filter((l) => l.is_active !== false);
     filtered.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
 
     return res.json({
@@ -118,6 +159,31 @@ export async function createSocialLink(req, res, next) {
       created_at: new Date().toISOString(),
     };
 
+    // Try saving to Supabase if table exists
+    try {
+      const { data, error } = await supabaseAdmin
+        .from("social_links")
+        .insert([
+          {
+            platform: newItem.platform,
+            title: newItem.title,
+            url: newItem.url,
+            display_value: newItem.display_value,
+            category: newItem.category,
+            sort_order: newItem.sort_order,
+            is_active: newItem.is_active,
+          },
+        ])
+        .select()
+        .single();
+
+      if (!error && data?.id) {
+        newItem.id = data.id;
+      }
+    } catch {
+      // Table may not exist yet, local fallback used
+    }
+
     currentList.push(newItem);
     writeLocalSocialLinks(currentList);
 
@@ -154,9 +220,10 @@ export async function updateSocialLink(req, res, next) {
     let updatedItem = null;
 
     const updatedList = currentList.map((item) => {
-      if (String(item.id) === String(id)) {
+      if (String(item.id) === String(id) || (platform && item.platform === String(platform).toLowerCase().trim())) {
         updatedItem = {
           ...item,
+          id: item.id || id,
           platform: platform !== undefined ? String(platform).toLowerCase().trim() : item.platform,
           title: title !== undefined ? title.trim() : item.title,
           url: url !== undefined ? url.trim() : item.url,
@@ -173,10 +240,43 @@ export async function updateSocialLink(req, res, next) {
     });
 
     if (!updatedItem) {
-      return res.status(404).json({ success: false, error: "Social link not found" });
+      updatedItem = {
+        id,
+        platform: String(platform || "link").toLowerCase().trim(),
+        title: title || platform || "Link",
+        url: url || "#",
+        display_value: display_value || url || "",
+        category: category || "social",
+        sort_order: Number(sort_order) || 0,
+        is_active: is_active !== undefined ? Boolean(is_active) : true,
+        updated_at: new Date().toISOString(),
+      };
+      updatedList.push(updatedItem);
     }
 
     writeLocalSocialLinks(updatedList);
+
+    // Try updating Supabase
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      const payload = {
+        platform: updatedItem.platform,
+        title: updatedItem.title,
+        url: updatedItem.url,
+        display_value: updatedItem.display_value,
+        category: updatedItem.category,
+        sort_order: updatedItem.sort_order,
+        is_active: updatedItem.is_active,
+      };
+
+      if (isUUID) {
+        await supabaseAdmin.from("social_links").update(payload).eq("id", id);
+      } else {
+        await supabaseAdmin.from("social_links").update(payload).eq("platform", updatedItem.platform);
+      }
+    } catch {
+      // Table may not exist yet
+    }
 
     // Sync to profiles if core field
     syncToSupabaseProfile(updatedItem.platform, updatedItem.url, updatedItem.display_value);
@@ -220,6 +320,18 @@ export async function toggleStatusSocialLink(req, res, next) {
 
     writeLocalSocialLinks(updatedList);
 
+    // Sync to Supabase
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin.from("social_links").update({ is_active: updatedItem.is_active }).eq("id", id);
+      } else {
+        await supabaseAdmin.from("social_links").update({ is_active: updatedItem.is_active }).eq("platform", updatedItem.platform);
+      }
+    } catch {
+      // Table may not exist yet
+    }
+
     return res.json({
       success: true,
       data: updatedItem,
@@ -237,6 +349,7 @@ export async function deleteSocialLink(req, res, next) {
   try {
     const { id } = req.params;
     const currentList = readLocalSocialLinks();
+    const target = currentList.find((item) => String(item.id) === String(id));
     const updatedList = currentList.filter((item) => String(item.id) !== String(id));
 
     if (updatedList.length === currentList.length) {
@@ -244,6 +357,18 @@ export async function deleteSocialLink(req, res, next) {
     }
 
     writeLocalSocialLinks(updatedList);
+
+    // Sync delete to Supabase
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin.from("social_links").delete().eq("id", id);
+      } else if (target?.platform) {
+        await supabaseAdmin.from("social_links").delete().eq("platform", target.platform);
+      }
+    } catch {
+      // Table may not exist yet
+    }
 
     return res.json({
       success: true,

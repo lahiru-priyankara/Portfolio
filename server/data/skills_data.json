@@ -1,6 +1,6 @@
 [
   {
-    "id": "s1",
+    "id": "a09ce884-0620-4b85-95b1-0cb3a6cb64f7",
     "category": "frontend/",
     "name": "HTML5",
     "icon": "html5",
@@ -8,7 +8,7 @@
     "sort_order": 1
   },
   {
-    "id": "s2",
+    "id": "9af152cd-e1a1-4e5e-9edb-de152ffae0c4",
     "category": "frontend/",
     "name": "CSS3",
     "icon": "css3",
@@ -16,7 +16,7 @@
     "sort_order": 2
   },
   {
-    "id": "s3",
+    "id": "a40072f2-0090-489f-922d-0b35221a6fb6",
     "category": "frontend/",
     "name": "JavaScript",
     "icon": "javascript",
@@ -24,7 +24,7 @@
     "sort_order": 3
   },
   {
-    "id": "s4",
+    "id": "67da7a29-991d-4261-a6fb-ef838db51c6a",
     "category": "frontend/",
     "name": "React",
     "icon": "react",
@@ -32,7 +32,7 @@
     "sort_order": 4
   },
   {
-    "id": "s5",
+    "id": "9aeca1a9-da83-47f6-99bd-8583a310afc6",
     "category": "backend/",
     "name": "Node.js",
     "icon": "nodejs",
@@ -40,7 +40,7 @@
     "sort_order": 5
   },
   {
-    "id": "s6",
+    "id": "82e4e824-6848-4830-b5ef-1bbe43d67300",
     "category": "backend/",
     "name": "Express.js",
     "icon": "express",
@@ -48,7 +48,7 @@
     "sort_order": 6
   },
   {
-    "id": "s7",
+    "id": "aaf4d4c7-bc74-4af5-8a38-ddcc242ded77",
     "category": "backend/",
     "name": "Java",
     "icon": "java",
@@ -56,7 +56,7 @@
     "sort_order": 7
   },
   {
-    "id": "s8",
+    "id": "fa141189-9bde-48f3-866e-78cd6b242382",
     "category": "backend/",
     "name": "Kotlin",
     "icon": "kotlin",
@@ -64,7 +64,7 @@
     "sort_order": 8
   },
   {
-    "id": "s9",
+    "id": "3065f0be-6abd-4802-8438-863c87a1e48b",
     "category": "backend/",
     "name": "PHP",
     "icon": "php",
@@ -72,7 +72,7 @@
     "sort_order": 9
   },
   {
-    "id": "s10",
+    "id": "30ec9183-1474-49c9-a651-621d5575147b",
     "category": "database/",
     "name": "MongoDB",
     "icon": "mongodb",
@@ -80,7 +80,7 @@
     "sort_order": 10
   },
   {
-    "id": "s11",
+    "id": "0b3ac4ee-fc83-43bc-919d-2f0ad5ecfef8",
     "category": "database/",
     "name": "MySQL",
     "icon": "mysql",
@@ -88,7 +88,7 @@
     "sort_order": 11
   },
   {
-    "id": "s12",
+    "id": "479b190d-18b5-42ff-8880-7d2e4129cea5",
     "category": "tools/",
     "name": "Git",
     "icon": "git",
@@ -96,7 +96,7 @@
     "sort_order": 12
   },
   {
-    "id": "s13",
+    "id": "f1e3baf7-7ffe-4b3b-9b64-1e4fcfca18b2",
     "category": "tools/",
     "name": "Postman",
     "icon": "postman",
@@ -104,7 +104,7 @@
     "sort_order": 13
   },
   {
-    "id": "s14",
+    "id": "eeb80571-274a-47d2-9285-3e0c329819f1",
     "category": "tools/",
     "name": "GitHub",
     "icon": "github",
@@ -112,7 +112,7 @@
     "sort_order": 14
   },
   {
-    "id": "s15",
+    "id": "de2cf408-250a-412a-beee-dedba311bc56",
     "category": "design/",
     "name": "Figma",
     "icon": "figma",
@@ -120,7 +120,7 @@
     "sort_order": 15
   },
   {
-    "id": "s16",
+    "id": "be495e6a-b6e6-4976-87bc-8d1f7d7c2820",
     "category": "design/",
     "name": "Adobe Photoshop",
     "icon": "photoshop",
@@ -128,7 +128,7 @@
     "sort_order": 16
   },
   {
-    "id": "s17",
+    "id": "c4bfb2bf-fa26-45b1-aad5-f93b4490a026",
     "category": "design/",
     "name": "Adobe Illustrator",
     "icon": "illustrator",
@@ -136,7 +136,7 @@
     "sort_order": 17
   },
   {
-    "id": "s18",
+    "id": "0d9e9737-1dca-4a9c-9749-c6e03ee52a12",
     "category": "design/",
     "name": "Unity",
     "icon": "unity",

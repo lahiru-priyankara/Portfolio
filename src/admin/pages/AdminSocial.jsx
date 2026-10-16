@@ -4,6 +4,7 @@ import SocialIcon from "../../components/SocialIcon";
 import { SOCIAL_PLATFORMS, resolveSocialIcon } from "../../utils/socialIconsData";
 import ConfirmModal from "../components/ConfirmModal";
 import { useToast } from "../context/useToast";
+import { usePortfolio } from "../../context/usePortfolio";
 
 const CATEGORIES = [
   { value: "developer", label: "Developer Profile" },
@@ -17,6 +18,7 @@ const CATEGORIES = [
 
 export default function AdminSocial() {
   const toast = useToast();
+  const { refreshSocialLinks } = usePortfolio();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,25 +45,43 @@ export default function AdminSocial() {
   const [linkToDelete, setLinkToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    loadLinks();
-  }, []);
-
-  async function loadLinks() {
+  const loadLinks = async () => {
     try {
-      setLoading(true);
-      setErrorMsg("");
       const res = await portfolioApi.getSocialLinks({ all: true });
       if (res?.data) {
         setLinks(res.data);
       }
+      if (typeof refreshSocialLinks === "function") {
+        refreshSocialLinks();
+      }
     } catch (err) {
-      console.error("Failed to load social links:", err);
-      setErrorMsg("Failed to connect to backend server. Make sure server is running.");
+      setErrorMsg(err.message || "Failed to load links");
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  useEffect(() => {
+    let active = true;
+    portfolioApi
+      .getSocialLinks({ all: true })
+      .then((res) => {
+        if (active) {
+          setLinks(res.data || []);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setErrorMsg(err.message || "Failed to load links");
+          setLoading(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
 
   const handleOpenAdd = () => {
     setEditingLink(null);

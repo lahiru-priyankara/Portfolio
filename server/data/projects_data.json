@@ -1,6 +1,6 @@
 [
   {
-    "id": "p1",
+    "id": "d03148d9-7db1-457e-bd2b-921a18d83560",
     "commit_hash": "4a4a966",
     "name": "StudyFlow — Student Study Planner",
     "description": "A full-stack app for managing academic subjects, assignments, and deadlines, with a real-time progress dashboard, a RESTful API on MongoDB, priority-based task management, and dark/light theming.",
@@ -92,7 +92,7 @@
     "auto_sync_github": false
   },
   {
-    "id": "p2",
+    "id": "f1f6a1f3-e49d-4ae2-a5c1-176bfdbc9fd9",
     "commit_hash": "a3f9c1",
     "name": "Seagills Lanka — Food Delivery System",
     "description": "A centralized platform to manage all parcel delivery operations — customers place delivery requests and track items in real time, while delivery staff and admins coordinate tasks for faster, accurate service.",
@@ -180,7 +180,7 @@
     "updated_at": "2026-10-14T21:21:59.798Z"
   },
   {
-    "id": "p3",
+    "id": "327fbd76-6c9e-4969-969a-16b80eab6dfc",
     "commit_hash": "7be201",
     "name": "UniMart — Student Marketplace",
     "description": "A marketplace where university students can buy and sell items within campus, with listings, search, and messaging between buyers and sellers.",
@@ -258,7 +258,7 @@
     "updated_at": "2026-10-14T21:30:33.498Z"
   },
   {
-    "id": "p4",
+    "id": "7b8a8c2f-1373-45c5-b91b-15b36421809d",
     "commit_hash": "d418e7",
     "name": "Wildlife Safari Management System",
     "description": "Contributed to requirements analysis and system design — use case diagrams, CRC cards, and class diagrams — and helped build modules for user management, booking, payments, and notifications.",
@@ -330,7 +330,7 @@
     "updated_at": "2026-10-15T04:16:04.015Z"
   },
   {
-    "id": "42e7cc9a-ef1d-4ad1-acdb-1d2433b83b8c",
+    "id": "1c2d0126-5118-40f8-bafe-7305f379efdd",
     "commit_hash": "f02c56",
     "name": "Rental Vehicle Management System",
     "description": "Implemented booking management and vehicle maintenance scheduling features, and took part in system testing, debugging, and technical documentation to keep the system reliable.",

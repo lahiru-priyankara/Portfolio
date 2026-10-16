@@ -4,10 +4,12 @@ import ServiceIcon from "../../components/ServiceIcon";
 import { SERVICE_ICONS, resolveServiceIcon } from "../../utils/serviceIconsData";
 import { useToast } from "../context/useToast";
 import { useConfirm } from "../context/useConfirm";
+import { usePortfolio } from "../../context/usePortfolio";
 
 export default function AdminServices() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { refreshServices } = usePortfolio();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,6 +30,9 @@ export default function AdminServices() {
     try {
       const res = await portfolioApi.getServices({ all: true });
       setServices(res.data || []);
+      if (typeof refreshServices === "function") {
+        refreshServices();
+      }
     } catch (err) {
       console.error("Failed to load services:", err.message);
     } finally {

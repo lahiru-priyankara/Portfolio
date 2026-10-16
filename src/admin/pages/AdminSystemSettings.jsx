@@ -158,6 +158,10 @@ export default function AdminSystemSettings() {
           setForm((prev) => ({ ...prev, avatar_url: savedData.avatar_url }));
         }
 
+        if (typeof refreshSettings === "function") {
+          refreshSettings();
+        }
+
         setSuccessMsg("System & Intro settings saved and applied successfully!");
         toast.success("System & Intro settings saved and applied successfully!");
         setTimeout(() => setSuccessMsg(""), 4500);
@@ -170,7 +174,7 @@ export default function AdminSystemSettings() {
   };
 
   const handleCopySql = () => {
-    const sql = `-- Run this in Supabase SQL Editor if you want to sync site_name column in profiles table:
+    const sql = `-- Run this in Supabase SQL Editor for complete database synchronization:
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS site_name TEXT DEFAULT 'yeshini.dev';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_file_tab TEXT DEFAULT 'intro.js';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_greeting TEXT DEFAULT 'Hi, I''m';
@@ -179,7 +183,32 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_role TEXT DEFAULT
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[];
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_primary_label TEXT DEFAULT 'View My Work';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_secondary_label TEXT DEFAULT 'Contact Me';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer';`;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer';
+
+-- Projects table columns
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS auto_sync_github BOOLEAN DEFAULT false;
+
+-- Services table columns
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS deliverables TEXT[] DEFAULT ARRAY[]::TEXT[];
+
+-- Social Links table
+CREATE TABLE IF NOT EXISTS public.social_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  platform TEXT NOT NULL,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  display_value TEXT,
+  category TEXT DEFAULT 'social',
+  sort_order INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+ALTER TABLE public.social_links ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public social links are readable by everyone" ON public.social_links FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can manage social links" ON public.social_links FOR ALL TO authenticated USING (true) WITH CHECK (true);`;
     navigator.clipboard.writeText(sql);
     setCopiedSql(true);
     toast.info("SQL schema migration snippet copied to clipboard.");

@@ -255,5 +255,59 @@ ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS images TEXT[] DEFAULT ARRAY
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS demo_video_url TEXT DEFAULT '';
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS tracking_data JSONB DEFAULT '{}'::JSONB;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS contributors JSONB DEFAULT '[]'::JSONB;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS auto_sync_github BOOLEAN DEFAULT false;
+
+-- Services Migration: Add is_published and deliverables
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
+ALTER TABLE public.services ADD COLUMN IF NOT EXISTS deliverables TEXT[] DEFAULT ARRAY[]::TEXT[];
+
+-- -----------------------------------------------------------------------------
+-- 6. ADDITIONAL TABLES: social_links & site_settings
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS public.social_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  platform TEXT NOT NULL,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  display_value TEXT DEFAULT '',
+  category TEXT DEFAULT 'social',
+  is_active BOOLEAN DEFAULT true,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.social_links ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public social_links are readable by everyone" ON public.social_links FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can manage social_links" ON public.social_links FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE TABLE IF NOT EXISTS public.site_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  site_name TEXT DEFAULT 'yeshini.dev',
+  browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer',
+  intro_file_tab TEXT DEFAULT 'intro.js',
+  intro_greeting TEXT DEFAULT 'Hi, I''m',
+  hero_name TEXT DEFAULT 'Yeshini Wickramasinghe',
+  hero_headline TEXT DEFAULT 'IT Undergraduate & Full-Stack Developer.',
+  hero_sub_headline TEXT DEFAULT 'I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.',
+  code_window_title TEXT DEFAULT 'developer.js',
+  developer_role TEXT DEFAULT 'Full-Stack Developer',
+  developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[],
+  based_in TEXT DEFAULT 'Sri Lanka',
+  is_available BOOLEAN DEFAULT true,
+  cta_primary_label TEXT DEFAULT 'View My Work',
+  cta_secondary_label TEXT DEFAULT 'Contact Me',
+  avatar_url TEXT DEFAULT '/avatar.jpg',
+  show_avatar BOOLEAN DEFAULT true,
+  favicon_url TEXT DEFAULT '/favicon.svg',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public site_settings are readable by everyone" ON public.site_settings FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can manage site_settings" ON public.site_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
 
 

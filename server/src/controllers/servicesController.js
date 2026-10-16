@@ -134,8 +134,8 @@ export async function createService(req, res, next) {
       id: "srv_" + Date.now(),
       command: command || `run ${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
       icon: icon || "globe",
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
       deliverables: parsedDeliverables,
       sort_order: Number(sort_order) || 0,
       is_published: is_published !== undefined ? Boolean(is_published) : true,
@@ -143,11 +143,7 @@ export async function createService(req, res, next) {
       updated_at: new Date().toISOString(),
     };
 
-    const currentList = readLocalServices();
-    currentList.push(newService);
-    writeLocalServices(currentList);
-
-    // Try persisting to Supabase
+    // Try persisting to Supabase first to obtain authoritative UUID
     try {
       const payload = {
         command: newService.command,
@@ -155,12 +151,26 @@ export async function createService(req, res, next) {
         title: newService.title,
         description: newService.description,
         sort_order: newService.sort_order,
+        deliverables: newService.deliverables,
+        is_published: newService.is_published,
       };
-      const { data } = await supabaseAdmin.from("services").insert([payload]).select().single();
-      if (data?.id) newService.id = data.id;
-    } catch {
-      // Supabase optional
+
+      const { data, error } = await supabaseAdmin.from("services").insert([payload]).select().single();
+      if (error && (error.code === "42703" || error.message?.includes("column"))) {
+        delete payload.deliverables;
+        delete payload.is_published;
+        const { data: baseData } = await supabaseAdmin.from("services").insert([payload]).select().single();
+        if (baseData?.id) newService.id = baseData.id;
+      } else if (data?.id) {
+        newService.id = data.id;
+      }
+    } catch (dbErr) {
+      console.warn("Supabase service create notice:", dbErr.message);
     }
+
+    const currentList = readLocalServices();
+    currentList.push(newService);
+    writeLocalServices(currentList);
 
     return res.status(201).json({
       success: true,
@@ -184,7 +194,12 @@ export async function updateService(req, res, next) {
     let updatedItem = null;
 
     const updatedList = currentList.map((s) => {
-      if (String(s.id) === String(id)) {
+      const isMatch =
+        String(s.id) === String(id) ||
+        (command && s.command === command) ||
+        (title && s.title?.toLowerCase() === title.toLowerCase());
+
+      if (isMatch) {
         const parsedDeliverables =
           deliverables !== undefined
             ? Array.isArray(deliverables)
@@ -197,13 +212,14 @@ export async function updateService(req, res, next) {
         updatedItem = {
           ...s,
           ...req.body,
+          id: s.id || id,
           command: command !== undefined ? command : s.command,
           icon: icon !== undefined ? icon : s.icon,
           title: title !== undefined ? title : s.title,
           description: description !== undefined ? description : s.description,
           deliverables: parsedDeliverables,
           sort_order: sort_order !== undefined ? Number(sort_order) : s.sort_order,
-          is_published: is_published !== undefined ? Boolean(is_published) : s.is_published,
+          is_published: is_published !== undefined ? Boolean(is_published) : s.is_published !== false,
           updated_at: new Date().toISOString(),
         };
         return updatedItem;
@@ -212,7 +228,6 @@ export async function updateService(req, res, next) {
     });
 
     if (!updatedItem) {
-      // If not in local file yet, add it
       updatedItem = {
         id,
         command: command || "run service",
@@ -231,18 +246,35 @@ export async function updateService(req, res, next) {
 
     // Try updating Supabase
     try {
-      await supabaseAdmin
-        .from("services")
-        .update({
-          command: updatedItem.command,
-          icon: updatedItem.icon,
-          title: updatedItem.title,
-          description: updatedItem.description,
-          sort_order: updatedItem.sort_order,
-        })
-        .eq("id", id);
-    } catch {
-      // ignore
+      const payload = {
+        command: updatedItem.command,
+        icon: updatedItem.icon,
+        title: updatedItem.title,
+        description: updatedItem.description,
+        sort_order: updatedItem.sort_order,
+        deliverables: updatedItem.deliverables,
+        is_published: updatedItem.is_published,
+      };
+
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+      if (isUUID) {
+        let { error } = await supabaseAdmin.from("services").update(payload).eq("id", id);
+        if (error && (error.code === "42703" || error.message?.includes("column"))) {
+          delete payload.deliverables;
+          delete payload.is_published;
+          await supabaseAdmin.from("services").update(payload).eq("id", id);
+        }
+      } else {
+        let { error, count } = await supabaseAdmin.from("services").update(payload).eq("command", updatedItem.command);
+        if (error || count === 0) {
+          delete payload.deliverables;
+          delete payload.is_published;
+          await supabaseAdmin.from("services").update(payload).eq("command", updatedItem.command);
+        }
+      }
+    } catch (dbErr) {
+      console.warn("Supabase service update notice:", dbErr.message);
     }
 
     return res.json({
@@ -266,7 +298,13 @@ export async function togglePublishService(req, res, next) {
     let updatedItem = null;
 
     const updatedList = currentList.map((s) => {
-      if (String(s.id) === String(id) || s.command === id) {
+      const isMatch =
+        String(s.id) === String(id) ||
+        s.command === id ||
+        (req.body.command && s.command === req.body.command) ||
+        (req.body.title && s.title?.toLowerCase() === req.body.title.toLowerCase());
+
+      if (isMatch) {
         const nextVal = is_published !== undefined ? Boolean(is_published) : !s.is_published;
         updatedItem = {
           ...s,
@@ -279,10 +317,49 @@ export async function togglePublishService(req, res, next) {
     });
 
     if (!updatedItem) {
+      // Find in Supabase directly
+      try {
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        if (isUUID) {
+          const { data: dbSrv } = await supabaseAdmin.from("services").select("*").eq("id", id).maybeSingle();
+          if (dbSrv) {
+            const nextVal = is_published !== undefined ? Boolean(is_published) : false;
+            updatedItem = {
+              ...dbSrv,
+              is_published: nextVal,
+              updated_at: new Date().toISOString(),
+            };
+            updatedList.push(updatedItem);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!updatedItem) {
       return res.status(404).json({ success: false, error: "Service not found" });
     }
 
     writeLocalServices(updatedList);
+
+    // Sync to Supabase
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin
+          .from("services")
+          .update({ is_published: updatedItem.is_published })
+          .eq("id", id);
+      } else {
+        await supabaseAdmin
+          .from("services")
+          .update({ is_published: updatedItem.is_published })
+          .eq("command", updatedItem.command);
+      }
+    } catch {
+      // ignore if is_published column not migrated yet
+    }
 
     return res.json({
       success: true,
@@ -301,15 +378,26 @@ export async function deleteService(req, res, next) {
   try {
     const { id } = req.params;
     const currentList = readLocalServices();
+    const target = currentList.find(
+      (s) => String(s.id) === String(id) || s.command === id
+    );
+
     const updatedList = currentList.filter(
-      (s) => String(s.id) !== String(id) && s.command !== id
+      (s) => String(s.id) !== String(id) && s.command !== id && (target ? s.title !== target.title : true)
     );
     writeLocalServices(updatedList);
 
     try {
-      await supabaseAdmin.from("services").delete().eq("id", id);
-    } catch {
-      // Ignore
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isUUID) {
+        await supabaseAdmin.from("services").delete().eq("id", id);
+      } else if (target?.command) {
+        await supabaseAdmin.from("services").delete().eq("command", target.command);
+      } else if (target?.title) {
+        await supabaseAdmin.from("services").delete().eq("title", target.title);
+      }
+    } catch (dbErr) {
+      console.warn("Supabase delete service notice:", dbErr.message);
     }
 
     return res.json({

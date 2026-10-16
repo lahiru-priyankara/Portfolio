@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { portfolioApi } from "../../api/portfolioApi";
 import { useToast } from "../context/useToast";
+import { usePortfolio } from "../../context/usePortfolio";
 
 const DEFAULT_PARAGRAPHS = [
   "I'm an IT undergraduate who enjoys turning ideas into working software — mostly web apps, mostly full-stack. I like the part of development where a messy requirement becomes a clean, usable interface, and I care about writing code that the next developer (often future me) can actually read.",
@@ -11,6 +12,7 @@ const DEFAULT_TAGS = ["IT Undergraduate", "Freelance Developer", "Sri Lanka", "O
 
 export default function AdminAbout() {
   const toast = useToast();
+  const { refreshProfile } = usePortfolio();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -218,6 +220,9 @@ export default function AdminAbout() {
 
     try {
       await portfolioApi.updateProfile(payload);
+      if (typeof refreshProfile === "function") {
+        refreshProfile();
+      }
       setSuccessMsg("About section updated and published successfully!");
       toast.success("About section updated and published successfully!");
       setTimeout(() => setSuccessMsg(""), 4500);

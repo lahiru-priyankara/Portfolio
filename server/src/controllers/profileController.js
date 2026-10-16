@@ -18,6 +18,15 @@ const CORE_PROFILE_COLUMNS = [
   "email",
   "linkedin_url",
   "github_url",
+  "site_name",
+  "about_file_tab",
+  "about_title_prefix",
+  "about_title_highlight",
+  "inspector_title",
+  "inspector_education",
+  "inspector_focus",
+  "inspector_experience",
+  "inspector_items",
 ];
 
 const DEFAULT_ABOUT_DATA = {

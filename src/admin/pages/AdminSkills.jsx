@@ -4,6 +4,7 @@ import TechIcon from "../../components/TechIcon";
 import { TECH_ICON_PRESETS, detectTechIcon } from "../../utils/techIconsData";
 import { useToast } from "../context/useToast";
 import { useConfirm } from "../context/useConfirm";
+import { usePortfolio } from "../../context/usePortfolio";
 
 const PRESET_CATEGORIES = [
   { id: "frontend/", label: "Frontend", desc: "UI, styling, client-side frameworks" },
@@ -46,6 +47,7 @@ const DEFAULT_18_SKILLS = [
 export default function AdminSkills() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { refreshSkills } = usePortfolio();
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
@@ -68,6 +70,9 @@ export default function AdminSkills() {
     try {
       const res = await portfolioApi.getSkills();
       setSkills(res.data || []);
+      if (typeof refreshSkills === "function") {
+        refreshSkills();
+      }
     } catch (err) {
       console.error("Failed to load skills:", err);
     } finally {

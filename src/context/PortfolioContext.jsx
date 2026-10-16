@@ -472,30 +472,25 @@ export function PortfolioProvider({ children }) {
 
     fetchDynamicData();
 
-    // Auto-sync refresh: check for updated projects & GitHub commits when window gains focus
-    const handleFocus = async () => {
+    const fetchFocusProjects = async () => {
       try {
         const res = await portfolioApi.getProjects();
-        if (res?.data?.length > 0) {
-          setProjects(res.data);
-        }
-      } catch {
-        // silent fallback
+        if (res?.data) setProjects(res.data);
+      } catch (err) {
+        console.warn("Could not refresh projects:", err.message);
       }
+    };
+
+    // Auto-sync refresh: check for updated projects & GitHub commits when window gains focus
+    const handleFocus = async () => {
+      fetchFocusProjects();
     };
 
     window.addEventListener("focus", handleFocus);
 
     // Periodic sync interval (every 60s) to keep live GitHub commit metrics up-to-date
     const interval = setInterval(async () => {
-      try {
-        const res = await portfolioApi.getProjects();
-        if (res?.data?.length > 0) {
-          setProjects(res.data);
-        }
-      } catch {
-        // silent fallback
-      }
+      fetchFocusProjects();
     }, 60 * 1000);
 
     return () => {
@@ -516,6 +511,78 @@ export function PortfolioProvider({ children }) {
     });
   };
 
+  const refreshProjects = async () => {
+    try {
+      const res = await portfolioApi.getProjects();
+      if (res?.data) setProjects(res.data);
+    } catch (err) {
+      console.warn("Could not refresh projects:", err.message);
+    }
+  };
+
+  const refreshServices = async () => {
+    try {
+      const res = await portfolioApi.getServices();
+      if (res?.data) setServices(res.data);
+    } catch (err) {
+      console.warn("Could not refresh services:", err.message);
+    }
+  };
+
+  const refreshSkills = async () => {
+    try {
+      const res = await portfolioApi.getSkills();
+      if (res?.data) setSkills(res.data);
+    } catch (err) {
+      console.warn("Could not refresh skills:", err.message);
+    }
+  };
+
+  const refreshSocialLinks = async () => {
+    try {
+      const res = await portfolioApi.getSocialLinks();
+      if (res?.data) setSocialLinks(res.data);
+    } catch (err) {
+      console.warn("Could not refresh social links:", err.message);
+    }
+  };
+
+  const refreshProfile = async () => {
+    try {
+      const res = await portfolioApi.getProfile();
+      if (res?.data) setProfile(res.data);
+    } catch (err) {
+      console.warn("Could not refresh profile:", err.message);
+    }
+  };
+
+  const refreshSettings = async () => {
+    try {
+      const res = await portfolioApi.getSettings();
+      if (res?.data) {
+        setSettings(res.data);
+        try {
+          localStorage.setItem("portfolio_site_settings", JSON.stringify(res.data));
+        } catch {
+          // ignore
+        }
+      }
+    } catch (err) {
+      console.warn("Could not refresh settings:", err.message);
+    }
+  };
+
+  const refreshAll = async () => {
+    await Promise.allSettled([
+      refreshProjects(),
+      refreshServices(),
+      refreshSkills(),
+      refreshSocialLinks(),
+      refreshProfile(),
+      refreshSettings(),
+    ]);
+  };
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -529,6 +596,13 @@ export function PortfolioProvider({ children }) {
         socialLinks,
         setSocialLinks,
         isBackendConnected,
+        refreshProjects,
+        refreshServices,
+        refreshSkills,
+        refreshSocialLinks,
+        refreshProfile,
+        refreshSettings,
+        refreshAll,
       }}
     >
       {children}

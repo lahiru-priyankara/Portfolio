@@ -1,6 +1,6 @@
 [
   {
-    "id": "8adf1061-49ff-4574-a51a-b4de1b6b4a36",
+    "id": "ffd7df11-ccbc-47f8-8d3e-76ea9ef8d243",
     "command": "run website-development",
     "icon": "globe",
     "title": "Website Development",
@@ -14,7 +14,7 @@
     "sort_order": 1
   },
   {
-    "id": "068e2f6b-580c-4f38-80ec-e5700a3a3f23",
+    "id": "bbe6a864-edec-4031-9632-786161e1fadc",
     "command": "run frontend-development",
     "icon": "code",
     "title": "Frontend Development",
@@ -28,7 +28,7 @@
     "sort_order": 2
   },
   {
-    "id": "335fc607-45df-401e-8b64-a546697cb851",
+    "id": "2d7b68ad-0c0d-4399-8ed9-fb2c4e70539f",
     "command": "run bug-fixing",
     "icon": "wrench",
     "title": "Bug Fixing & Code QA",
@@ -42,7 +42,7 @@
     "sort_order": 3
   },
   {
-    "id": "95c57961-f992-4cd7-9882-086867d90344",
+    "id": "125d34e6-33af-4076-b68d-44fb85bea2c2",
     "command": "run responsive-design",
     "icon": "mobile",
     "title": "Responsive Web Design",
@@ -56,7 +56,7 @@
     "sort_order": 4
   },
   {
-    "id": "55a6f9ea-ff84-4ae8-8f2f-5fe3275076a6",
+    "id": "1ab723a8-5b59-46ee-887e-ddf9a4e1df61",
     "command": "run api-integration",
     "icon": "api",
     "title": "API & Backend Integration",
@@ -70,7 +70,7 @@
     "sort_order": 5
   },
   {
-    "id": "7e850af0-9dd8-4d1d-beda-516cd097f860",
+    "id": "07cb5013-1aa3-43bb-a16b-b202bcc3a7a1",
     "command": "run database-architecture",
     "icon": "database",
     "title": "Database Architecture",

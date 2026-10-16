@@ -3,6 +3,7 @@ import { portfolioApi } from "../../api/portfolioApi";
 import ProjectTracker from "../../components/ProjectTracker";
 import { useToast } from "../context/useToast";
 import { useConfirm } from "../context/useConfirm";
+import { usePortfolio } from "../../context/usePortfolio";
 
 const DEFAULT_TRACKING = {
   milestone_title: "47 days until next preview build",
@@ -24,6 +25,7 @@ const DEFAULT_TRACKING = {
 export default function AdminProjects() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { refreshProjects } = usePortfolio();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,6 +59,9 @@ export default function AdminProjects() {
     try {
       const res = await portfolioApi.getProjects({ all: true });
       setProjects(res.data || []);
+      if (typeof refreshProjects === "function") {
+        refreshProjects();
+      }
     } catch (err) {
       console.error("Failed to load projects:", err.message);
     } finally {
