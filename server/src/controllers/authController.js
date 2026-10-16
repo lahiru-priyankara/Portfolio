@@ -51,6 +51,42 @@ export async function getMe(req, res) {
 }
 
 /**
+ * Refresh expired session using refresh_token
+ */
+export async function refreshToken(req, res, next) {
+  try {
+    const { refresh_token } = req.body;
+    if (!refresh_token) {
+      return res.status(400).json({
+        success: false,
+        error: "refresh_token is required",
+      });
+    }
+
+    const { data, error } = await supabase.auth.refreshSession({ refresh_token });
+
+    if (error) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    return res.json({
+      success: true,
+      user: data.user,
+      session: {
+        access_token: data.session?.access_token,
+        refresh_token: data.session?.refresh_token,
+        expires_at: data.session?.expires_at,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * Logout
  */
 export async function logout(req, res, next) {

@@ -15,6 +15,54 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
+// URL normalization for Vercel Serverless Function rewrites & reverse proxies
+// Must run FIRST before any routing or parsing
+app.use((req, _res, next) => {
+  // 1. Check for real request URI in forwarding/proxy headers
+  const forwardedUri =
+    req.headers["x-forwarded-uri"] ||
+    req.headers["x-original-url"] ||
+    req.headers["x-rewrite-url"];
+
+  if (forwardedUri && !forwardedUri.includes("/index.js") && !forwardedUri.includes("/api/index")) {
+    req.url = forwardedUri;
+    return next();
+  }
+
+  // 2. Check for Vercel rewrite regex match in query (?0=... or req.query['0'])
+  // From vercel.json: { "source": "/api/(.*)", "destination": "/api/index.js" }
+  let subpath = null;
+  const parsedUrl = new URL(req.url, "http://localhost");
+  const query0 = req.query?.["0"] || req.query?.[0] || parsedUrl.searchParams.get("0");
+
+  if (query0) {
+    subpath = query0;
+    if (req.query) {
+      delete req.query["0"];
+      delete req.query[0];
+    }
+    parsedUrl.searchParams.delete("0");
+  }
+
+  if (subpath) {
+    const cleanSub = subpath.startsWith("/") ? subpath : `/${subpath}`;
+    const search = parsedUrl.searchParams.toString();
+    req.url = `/api${cleanSub}${search ? `?${search}` : ""}`;
+    return next();
+  }
+
+  // 3. Fallback: if req.url starts with /api/index.js or /index.js, strip the index.js portion
+  if (req.url.startsWith("/api/index.js") || req.url.startsWith("/api/index")) {
+    const afterIndex = req.url.replace(/^\/api\/index(\.js)?/, "");
+    req.url = afterIndex ? `/api${afterIndex.startsWith("/") ? afterIndex : `/${afterIndex}`}` : "/api";
+  } else if (req.url.startsWith("/index.js") || req.url.startsWith("/index")) {
+    const afterIndex = req.url.replace(/^\/index(\.js)?/, "");
+    req.url = afterIndex ? (afterIndex.startsWith("/") ? afterIndex : `/${afterIndex}`) : "/";
+  }
+
+  next();
+});
+
 // Middleware
 app.use(
   cors({
@@ -33,32 +81,12 @@ app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
 // Health Check
-app.get("/health", (req, res) => {
+app.get(["/health", "/api/health"], (req, res) => {
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
     service: "portfolio-backend",
   });
-});
-
-// URL normalization for Vercel Serverless Function rewrites & reverse proxies
-app.use((req, res, next) => {
-  const originalPath =
-    req.headers["x-matched-path"] ||
-    req.headers["x-vercel-matched-path"] ||
-    req.headers["x-forwarded-uri"] ||
-    req.headers["x-original-url"] ||
-    req.headers["x-rewrite-url"];
-
-  if (
-    originalPath &&
-    !originalPath.endsWith("/api/index.js") &&
-    !originalPath.endsWith("/api/index") &&
-    !originalPath.endsWith("/api")
-  ) {
-    req.url = originalPath;
-  }
-  next();
 });
 
 // API Routes (mounted under both /api and root / to support direct Express calls and Vercel serverless rewrites)

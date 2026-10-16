@@ -9,7 +9,7 @@ export async function requireAuth(req, res, next) {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
-        error: "Unauthorized: Missing or invalid Authorization header",
+        error: "Unauthorized: Missing or invalid Authorization header. Please sign in to perform this action.",
       });
     }
 
@@ -43,7 +43,7 @@ export async function requireAuth(req, res, next) {
       }
       return res.status(401).json({
         success: false,
-        error: "Unauthorized: Invalid or expired session token",
+        error: "Unauthorized: Invalid or expired session token. Please sign in to the Admin Panel again.",
       });
     }
 

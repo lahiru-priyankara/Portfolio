@@ -66,7 +66,9 @@
           "unit": "Fixed",
           "color": "silver"
         }
-      ]
+      ],
+      "is_published": true,
+      "auto_sync_github": false
     },
     "contributors": [
       {
@@ -86,7 +88,7 @@
     ],
     "is_featured": true,
     "sort_order": 1,
-    "updated_at": "2026-10-15T13:55:28.961Z",
+    "updated_at": "2026-10-16T06:32:33.818Z",
     "last_github_sync_at": "2026-10-15T05:28:21.778Z",
     "is_published": true,
     "auto_sync_github": false

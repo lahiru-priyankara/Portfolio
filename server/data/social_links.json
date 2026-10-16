@@ -1,55 +1,62 @@
 [
   {
-    "id": "soc-github",
+    "id": "91201fa5-e43a-4e26-922e-2150a81cf089",
     "platform": "github",
     "title": "GitHub",
     "url": "https://github.com/lahiru-priyankara",
     "display_value": "github.com/lahiru-priyankara",
     "category": "developer",
-    "sort_order": 1,
     "is_active": true,
-    "updated_at": "2026-10-16T05:26:35.045Z"
+    "sort_order": 1,
+    "created_at": "2026-10-16T06:28:36.15787+00:00",
+    "updated_at": "2026-10-16T06:28:36.15787+00:00"
   },
   {
-    "id": "soc-linkedin",
+    "id": "1f99f856-d5ff-40b1-a447-7fd6cc83cb57",
     "platform": "linkedin",
     "title": "LinkedIn",
     "url": "https://linkedin.com/in/yeshini",
     "display_value": "linkedin.com/in/yeshini",
     "category": "professional",
+    "is_active": true,
     "sort_order": 2,
-    "is_active": true
+    "created_at": "2026-10-16T06:28:36.15787+00:00",
+    "updated_at": "2026-10-16T06:28:36.15787+00:00"
   },
   {
-    "id": "soc-email",
+    "id": "53a91036-26f1-4ed3-9f5d-523159d1f8a5",
     "platform": "email",
     "title": "Email",
     "url": "mailto:yeshiniarchana@gmail.com",
     "display_value": "yeshiniarchana@gmail.com",
     "category": "direct",
+    "is_active": true,
     "sort_order": 3,
-    "is_active": true
+    "created_at": "2026-10-16T06:28:36.15787+00:00",
+    "updated_at": "2026-10-16T06:28:36.15787+00:00"
   },
   {
-    "id": "soc-leetcode",
+    "id": "4b635e5a-4972-49c5-bee9-aa76353f3118",
     "platform": "leetcode",
     "title": "LeetCode",
     "url": "https://leetcode.com/u/yeshini",
     "display_value": "leetcode.com/u/yeshini",
     "category": "developer",
-    "sort_order": 4,
     "is_active": true,
-    "updated_at": "2026-10-15T06:47:47.978Z"
+    "sort_order": 4,
+    "created_at": "2026-10-16T06:28:36.15787+00:00",
+    "updated_at": "2026-10-16T06:28:36.15787+00:00"
   },
   {
-    "id": "soc-twitter",
+    "id": "8965e489-a9bb-4b05-bca5-710f70d7a795",
     "platform": "twitter",
     "title": "Twitter / X",
     "url": "https://x.com/yeshini_dev",
     "display_value": "@yeshini_dev",
     "category": "social",
-    "sort_order": 5,
     "is_active": true,
-    "updated_at": "2026-10-15T06:48:02.074Z"
+    "sort_order": 5,
+    "created_at": "2026-10-16T06:28:36.15787+00:00",
+    "updated_at": "2026-10-16T06:28:36.15787+00:00"
   }
 ]

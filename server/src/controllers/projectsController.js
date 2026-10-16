@@ -705,6 +705,7 @@ export async function togglePublishProject(req, res, next) {
         await supabaseAdmin
           .from("projects")
           .update({
+            is_published: updatedItem.is_published,
             tracking_data: updatedItem.tracking_data,
             updated_at: new Date().toISOString(),
           })

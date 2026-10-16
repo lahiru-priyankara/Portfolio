@@ -10,6 +10,7 @@ export function AdminAuthProvider({ children }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem("portfolio_admin_token");
+    localStorage.removeItem("portfolio_admin_refresh_token");
     setToken(null);
     setUser(null);
     portfolioApi.logout().catch(() => {});
@@ -27,9 +28,28 @@ export function AdminAuthProvider({ children }) {
         if (res.success && res.user) {
           setUser(res.user);
         } else {
-          logout();
+          throw new Error("Invalid session");
         }
       } catch (err) {
+        // Attempt session refresh if refresh token is available
+        const refreshToken = localStorage.getItem("portfolio_admin_refresh_token");
+        if (refreshToken) {
+          try {
+            const refreshRes = await portfolioApi.refreshToken(refreshToken);
+            if (refreshRes.success && refreshRes.session?.access_token) {
+              const newAccessToken = refreshRes.session.access_token;
+              localStorage.setItem("portfolio_admin_token", newAccessToken);
+              if (refreshRes.session.refresh_token) {
+                localStorage.setItem("portfolio_admin_refresh_token", refreshRes.session.refresh_token);
+              }
+              setToken(newAccessToken);
+              setUser(refreshRes.user);
+              return;
+            }
+          } catch {
+            // refresh failed, logout below
+          }
+        }
         console.warn("Session expired or invalid:", err.message);
         logout();
       } finally {
@@ -47,6 +67,9 @@ export function AdminAuthProvider({ children }) {
       if (res.success && res.session?.access_token) {
         const accessToken = res.session.access_token;
         localStorage.setItem("portfolio_admin_token", accessToken);
+        if (res.session.refresh_token) {
+          localStorage.setItem("portfolio_admin_refresh_token", res.session.refresh_token);
+        }
         setToken(accessToken);
         setUser(res.user);
         return { success: true };

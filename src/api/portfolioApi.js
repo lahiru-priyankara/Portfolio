@@ -7,6 +7,11 @@ export const portfolioApi = {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
+  refreshToken: (refresh_token) =>
+    apiRequest("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token }),
+    }),
   getMe: () => apiRequest("/auth/me"),
   logout: () => apiRequest("/auth/logout", { method: "POST" }),
 
