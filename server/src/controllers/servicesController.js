@@ -54,23 +54,27 @@ export async function getServices(req, res, next) {
               (s.command && sp.command && s.command.trim() === sp.command.trim())
           );
           return {
+            ...lp,
             ...sp,
-            title: lp?.title || sp.title,
-            description: lp?.description || sp.description,
-            icon: lp?.icon || sp.icon || "globe",
+            id: sp.id,
+            title: sp.title || lp?.title || "",
+            description: sp.description || lp?.description || "",
+            icon: sp.icon || lp?.icon || "globe",
             deliverables:
-              Array.isArray(lp?.deliverables) && lp.deliverables.length > 0
-                ? lp.deliverables
-                : Array.isArray(sp.deliverables)
+              Array.isArray(sp.deliverables) && sp.deliverables.length > 0
                 ? sp.deliverables
+                : Array.isArray(lp?.deliverables) && lp.deliverables.length > 0
+                ? lp.deliverables
+                : typeof sp.deliverables === "string"
+                ? sp.deliverables.split(",").map((t) => t.trim()).filter(Boolean)
                 : typeof lp?.deliverables === "string"
                 ? lp.deliverables.split(",").map((t) => t.trim()).filter(Boolean)
                 : [],
             is_published:
-              lp?.is_published !== undefined
-                ? lp.is_published
-                : sp.is_published !== undefined
-                ? sp.is_published
+              sp.is_published !== undefined && sp.is_published !== null
+                ? Boolean(sp.is_published)
+                : lp?.is_published !== undefined
+                ? Boolean(lp.is_published)
                 : true,
           };
         });
@@ -395,6 +399,8 @@ export async function deleteService(req, res, next) {
         await supabaseAdmin.from("services").delete().eq("command", target.command);
       } else if (target?.title) {
         await supabaseAdmin.from("services").delete().eq("title", target.title);
+      } else {
+        await supabaseAdmin.from("services").delete().eq("command", id);
       }
     } catch (dbErr) {
       console.warn("Supabase delete service notice:", dbErr.message);

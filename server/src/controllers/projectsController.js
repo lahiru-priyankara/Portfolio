@@ -299,29 +299,35 @@ export async function getProjects(req, res, next) {
               : false;
 
           return {
+            ...lp,
             ...sp,
             id: sp.id, // Supabase UUID is always authoritative
-            commit_hash: lp?.commit_hash || sp.commit_hash,
+            commit_hash: sp.commit_hash || lp?.commit_hash,
+            name: sp.name || lp?.name,
+            description: sp.description || lp?.description,
+            stack: Array.isArray(sp.stack) && sp.stack.length > 0 ? sp.stack : lp?.stack || [],
+            github_url: sp.github_url || lp?.github_url || "#",
+            demo_url: sp.demo_url || lp?.demo_url || "#",
             status: sp.status || lp?.status || "completed",
             start_date: sp.start_date || lp?.start_date || "",
             end_date: sp.end_date || lp?.end_date || "",
             images: Array.isArray(sp.images) && sp.images.length > 0 ? sp.images : lp?.images || [],
             demo_video_url: sp.demo_video_url || lp?.demo_video_url || "",
             tracking_data:
-              lp?.tracking_data && Object.keys(lp.tracking_data).length > 0
+              sp.tracking_data && Object.keys(sp.tracking_data).length > 0
+                ? { ...(lp?.tracking_data || {}), ...sp.tracking_data, is_published: isPublished, auto_sync_github: autoSync }
+                : lp?.tracking_data && Object.keys(lp.tracking_data).length > 0
                 ? { ...lp.tracking_data, is_published: isPublished, auto_sync_github: autoSync }
-                : sp.tracking_data && Object.keys(sp.tracking_data).length > 0
-                ? { ...sp.tracking_data, is_published: isPublished, auto_sync_github: autoSync }
                 : { is_published: isPublished, auto_sync_github: autoSync },
             contributors:
-              Array.isArray(lp?.contributors) && lp.contributors.length > 0
-                ? lp.contributors
-                : Array.isArray(sp.contributors) && sp.contributors.length > 0
+              Array.isArray(sp.contributors) && sp.contributors.length > 0
                 ? sp.contributors
+                : Array.isArray(lp?.contributors) && lp.contributors.length > 0
+                ? lp.contributors
                 : [],
             auto_sync_github: autoSync,
             is_published: isPublished,
-            last_github_sync_at: lp?.last_github_sync_at || sp.last_github_sync_at || null,
+            last_github_sync_at: sp.last_github_sync_at || lp?.last_github_sync_at || null,
           };
         });
 
@@ -739,6 +745,8 @@ export async function deleteProject(req, res, next) {
         await supabaseAdmin.from("projects").delete().eq("commit_hash", target.commit_hash);
       } else if (target?.name) {
         await supabaseAdmin.from("projects").delete().eq("name", target.name);
+      } else {
+        await supabaseAdmin.from("projects").delete().eq("commit_hash", id);
       }
     } catch (dbErr) {
       console.warn("Supabase delete project notice:", dbErr.message);

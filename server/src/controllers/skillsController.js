@@ -287,6 +287,8 @@ export async function deleteSkill(req, res, next) {
         await supabaseAdmin.from("skills").delete().eq("id", id);
       } else if (target?.name) {
         await supabaseAdmin.from("skills").delete().eq("name", target.name);
+      } else {
+        await supabaseAdmin.from("skills").delete().eq("name", id);
       }
     } catch (dbErr) {
       console.warn("Supabase delete skill notice:", dbErr.message);

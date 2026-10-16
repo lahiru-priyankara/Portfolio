@@ -315,6 +315,27 @@ export async function toggleStatusSocialLink(req, res, next) {
     });
 
     if (!updatedItem) {
+      try {
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        const { data: dbItem } = isUUID
+          ? await supabaseAdmin.from("social_links").select("*").eq("id", id).maybeSingle()
+          : await supabaseAdmin.from("social_links").select("*").eq("platform", id).maybeSingle();
+
+        if (dbItem) {
+          const nextVal = is_active !== undefined ? Boolean(is_active) : !dbItem.is_active;
+          updatedItem = {
+            ...dbItem,
+            is_active: nextVal,
+            updated_at: new Date().toISOString(),
+          };
+          updatedList.push(updatedItem);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!updatedItem) {
       return res.status(404).json({ success: false, error: "Social link not found" });
     }
 
@@ -352,22 +373,25 @@ export async function deleteSocialLink(req, res, next) {
     const target = currentList.find((item) => String(item.id) === String(id));
     const updatedList = currentList.filter((item) => String(item.id) !== String(id));
 
-    if (updatedList.length === currentList.length) {
-      return res.status(404).json({ success: false, error: "Social link not found" });
-    }
-
     writeLocalSocialLinks(updatedList);
 
     // Sync delete to Supabase
+    let dbSuccess = false;
     try {
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       if (isUUID) {
-        await supabaseAdmin.from("social_links").delete().eq("id", id);
-      } else if (target?.platform) {
-        await supabaseAdmin.from("social_links").delete().eq("platform", target.platform);
+        const { error } = await supabaseAdmin.from("social_links").delete().eq("id", id);
+        if (!error) dbSuccess = true;
+      } else if (target?.platform || id) {
+        const { error } = await supabaseAdmin.from("social_links").delete().eq("platform", target?.platform || id);
+        if (!error) dbSuccess = true;
       }
     } catch {
       // Table may not exist yet
+    }
+
+    if (updatedList.length === currentList.length && !dbSuccess) {
+      return res.status(404).json({ success: false, error: "Social link not found" });
     }
 
     return res.json({

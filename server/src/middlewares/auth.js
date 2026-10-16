@@ -1,4 +1,4 @@
-import { supabase } from "../config/supabase.js";
+import { supabase, supabaseAdmin } from "../config/supabase.js";
 
 /**
  * Middleware to verify Supabase JWT token from Authorization header
@@ -14,9 +14,29 @@ export async function requireAuth(req, res, next) {
     }
 
     const token = authHeader.split(" ")[1];
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    let user = null;
 
-    if (error || !user) {
+    try {
+      const authRes = await supabase.auth.getUser(token);
+      if (authRes.data?.user) {
+        user = authRes.data.user;
+      }
+    } catch {
+      // try admin fallback
+    }
+
+    if (!user) {
+      try {
+        const adminRes = await supabaseAdmin.auth.getUser(token);
+        if (adminRes.data?.user) {
+          user = adminRes.data.user;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!user) {
       if (token && (process.env.NODE_ENV === "development" || !process.env.NODE_ENV)) {
         req.user = { id: "dev-admin", email: "admin@portfolio.local" };
         return next();

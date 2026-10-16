@@ -41,8 +41,9 @@ app.get("/health", (req, res) => {
   });
 });
 
-// API Routes
+// API Routes (mounted under both /api and root / to support direct Express calls and Vercel serverless rewrites)
 app.use("/api", apiRouter);
+app.use("/", apiRouter);
 
 // Serve frontend static assets if dist/ exists (single-server deployment mode)
 const distPath = path.resolve(__dirname, "../../dist");

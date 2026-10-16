@@ -183,6 +183,14 @@ export async function getSettings(req, res, next) {
         if (prof.based_in) dbSettings.based_in = prof.based_in;
         if (prof.is_available !== undefined) dbSettings.is_available = prof.is_available;
         if (prof.site_name) dbSettings.site_name = prof.site_name;
+        if (prof.browser_title) dbSettings.browser_title = prof.browser_title;
+        if (prof.intro_file_tab) dbSettings.intro_file_tab = prof.intro_file_tab;
+        if (prof.intro_greeting) dbSettings.intro_greeting = prof.intro_greeting;
+        if (prof.code_window_title) dbSettings.code_window_title = prof.code_window_title;
+        if (prof.developer_role) dbSettings.developer_role = prof.developer_role;
+        if (prof.developer_stack && Array.isArray(prof.developer_stack)) dbSettings.developer_stack = prof.developer_stack;
+        if (prof.cta_primary_label) dbSettings.cta_primary_label = prof.cta_primary_label;
+        if (prof.cta_secondary_label) dbSettings.cta_secondary_label = prof.cta_secondary_label;
       }
     } catch {
       // ignore
@@ -261,7 +269,7 @@ export async function updateSettings(req, res, next) {
       // Table might not exist yet, which is fine
     }
 
-    // 3. Sync hero fields back to profiles table
+    // 3. Sync hero & system fields back to profiles table
     try {
       const profileUpdates = {
         full_name: updated.hero_name || updated.full_name,
@@ -269,13 +277,17 @@ export async function updateSettings(req, res, next) {
         sub_headline: updated.hero_sub_headline || updated.sub_headline,
         based_in: updated.based_in,
         is_available: updated.is_available,
+        site_name: updated.site_name,
+        browser_title: updated.browser_title,
+        intro_file_tab: updated.intro_file_tab,
+        intro_greeting: updated.intro_greeting,
+        code_window_title: updated.code_window_title,
+        developer_role: updated.developer_role,
+        developer_stack: updated.developer_stack,
+        cta_primary_label: updated.cta_primary_label,
+        cta_secondary_label: updated.cta_secondary_label,
         updated_at: new Date().toISOString(),
       };
-
-      // If site_name column was added to profiles, include it
-      if (updated.site_name) {
-        profileUpdates.site_name = updated.site_name;
-      }
 
       const { data: existingProf } = await supabaseAdmin
         .from("profiles")
@@ -284,17 +296,21 @@ export async function updateSettings(req, res, next) {
         .single();
 
       if (existingProf) {
-        const { error: profUpdateErr } = await supabaseAdmin
+        let { error: profUpdateErr } = await supabaseAdmin
           .from("profiles")
           .update(profileUpdates)
           .eq("id", existingProf.id);
 
-        // If site_name was not recognized in profiles, retry without it
+        // If some columns were not recognized in profiles, retry with base columns
         if (profUpdateErr && profUpdateErr.code === "42703") {
-          delete profileUpdates.site_name;
+          const fallbackCols = ["full_name", "headline", "sub_headline", "based_in", "is_available", "updated_at"];
+          const baseUpdates = {};
+          for (const col of fallbackCols) {
+            if (profileUpdates[col] !== undefined) baseUpdates[col] = profileUpdates[col];
+          }
           await supabaseAdmin
             .from("profiles")
-            .update(profileUpdates)
+            .update(baseUpdates)
             .eq("id", existingProf.id);
         }
       }
