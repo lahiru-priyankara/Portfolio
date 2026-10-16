@@ -7,26 +7,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 dotenv.config();
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl =
+  process.env.SUPABASE_URL ||
+  process.env.VITE_SUPABASE_URL ||
+  "https://lgacksaciawxmqzxpnxv.supabase.co";
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    "[WARN] Supabase environment variables are missing! Check server/.env. Public and admin queries will fail until credentials are supplied."
-  );
-}
+const supabaseAnonKey =
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  "sb_publishable_izWvgQfrVZxLZ_i-d9A3IA_S4FLj2qV";
+
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  "sb_secret_gRYkuJ71ma_UnGdZ6oUM1w_XVRgwZfP";
 
 // Client for public operations (respects public RLS)
 export const supabase = createClient(
-  supabaseUrl || "https://placeholder.supabase.co",
-  supabaseAnonKey || "placeholder-anon-key"
+  supabaseUrl,
+  supabaseAnonKey
 );
 
 // Admin client for backend administration (uses service role key to manage tables and bypass public restrictions)
 export const supabaseAdmin = createClient(
-  supabaseUrl || "https://placeholder.supabase.co",
-  supabaseServiceKey || supabaseAnonKey || "placeholder-service-key",
+  supabaseUrl,
+  supabaseServiceKey || supabaseAnonKey,
   {
     auth: {
       autoRefreshToken: false,

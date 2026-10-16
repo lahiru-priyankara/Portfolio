@@ -3,11 +3,12 @@
     "id": "soc-github",
     "platform": "github",
     "title": "GitHub",
-    "url": "https://github.com/YeshiniWckramasinghe",
-    "display_value": "github.com/YeshiniWckramasinghe",
+    "url": "https://github.com/lahiru-priyankara",
+    "display_value": "github.com/lahiru-priyankara",
     "category": "developer",
     "sort_order": 1,
-    "is_active": true
+    "is_active": true,
+    "updated_at": "2026-10-16T05:26:35.045Z"
   },
   {
     "id": "soc-linkedin",

@@ -41,6 +41,26 @@ app.get("/health", (req, res) => {
   });
 });
 
+// URL normalization for Vercel Serverless Function rewrites & reverse proxies
+app.use((req, res, next) => {
+  const originalPath =
+    req.headers["x-matched-path"] ||
+    req.headers["x-vercel-matched-path"] ||
+    req.headers["x-forwarded-uri"] ||
+    req.headers["x-original-url"] ||
+    req.headers["x-rewrite-url"];
+
+  if (
+    originalPath &&
+    !originalPath.endsWith("/api/index.js") &&
+    !originalPath.endsWith("/api/index") &&
+    !originalPath.endsWith("/api")
+  ) {
+    req.url = originalPath;
+  }
+  next();
+});
+
 // API Routes (mounted under both /api and root / to support direct Express calls and Vercel serverless rewrites)
 app.use("/api", apiRouter);
 app.use("/", apiRouter);
