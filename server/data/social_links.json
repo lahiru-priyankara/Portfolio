@@ -1,5 +1,45 @@
 [
   {
+    "id": "53a91036-26f1-4ed3-9f5d-523159d1f8a5",
+    "platform": "email",
+    "title": "Email",
+    "url": "mailto:officiallahiru.p@gmail.com",
+    "display_value": "officiallahiru.p@gmail.com",
+    "category": "direct",
+    "is_active": true,
+    "sort_order": 1
+  },
+  {
+    "id": "1f99f856-d5ff-40b1-a447-7fd6cc83cb57",
+    "platform": "linkedin",
+    "title": "LinkedIn",
+    "url": "https://www.linkedin.com/in/lahiru-priyankara-5972742ab",
+    "display_value": "www.linkedin.com/in/lahiru-priyankara",
+    "category": "professional",
+    "is_active": true,
+    "sort_order": 2
+  },
+  {
+    "id": "1acc7421-7ded-4319-a960-eda7ef15ecf3",
+    "platform": "facebook",
+    "title": "Facebook",
+    "url": "https://www.facebook.com/profile.php?id=61584918527595",
+    "display_value": "www.facebook.com/lahiru-priyankara",
+    "category": "social",
+    "is_active": true,
+    "sort_order": 3
+  },
+  {
+    "id": "3565527e-e76b-4c51-93b0-eb7d64eed204",
+    "platform": "instagram",
+    "title": "Instagram",
+    "url": "https://www.instagram.com/kk.priya_/",
+    "display_value": "www.instagram.com/kk.priya",
+    "category": "social",
+    "is_active": true,
+    "sort_order": 4
+  },
+  {
     "id": "91201fa5-e43a-4e26-922e-2150a81cf089",
     "platform": "github",
     "title": "GitHub",
@@ -7,32 +47,6 @@
     "display_value": "github.com/lahiru-priyankara",
     "category": "developer",
     "is_active": true,
-    "sort_order": 1,
-    "created_at": "2026-10-16T06:28:36.15787+00:00",
-    "updated_at": "2026-10-16T06:28:36.15787+00:00"
-  },
-  {
-    "id": "1f99f856-d5ff-40b1-a447-7fd6cc83cb57",
-    "platform": "linkedin",
-    "title": "LinkedIn",
-    "url": "https://linkedin.com/in/yeshini",
-    "display_value": "linkedin.com/in/yeshini",
-    "category": "professional",
-    "is_active": true,
-    "sort_order": 2,
-    "created_at": "2026-10-16T06:28:36.15787+00:00",
-    "updated_at": "2026-10-16T06:28:36.15787+00:00"
-  },
-  {
-    "id": "53a91036-26f1-4ed3-9f5d-523159d1f8a5",
-    "platform": "email",
-    "title": "Email",
-    "url": "mailto:yeshiniarchana@gmail.com",
-    "display_value": "yeshiniarchana@gmail.com",
-    "category": "direct",
-    "is_active": true,
-    "sort_order": 3,
-    "created_at": "2026-10-16T06:28:36.15787+00:00",
-    "updated_at": "2026-10-16T07:54:21.816Z"
+    "sort_order": 5
   }
 ]

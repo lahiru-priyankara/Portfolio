@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  site_name TEXT DEFAULT 'yeshini.dev',
+  site_name TEXT DEFAULT 'Lahiru.dev',
   full_name TEXT NOT NULL,
   headline TEXT NOT NULL,
   sub_headline TEXT NOT NULL,
@@ -22,10 +22,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   intro_greeting TEXT DEFAULT 'Hi, I''m',
   code_window_title TEXT DEFAULT 'developer.js',
   developer_role TEXT DEFAULT 'Full-Stack Developer',
-  developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[],
+  developer_stack TEXT[] DEFAULT ARRAY['React', 'C++', 'Sql', 'Python', 'Java']::TEXT[],
   cta_primary_label TEXT DEFAULT 'View My Work',
   cta_secondary_label TEXT DEFAULT 'Contact Me',
-  browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer',
+  browser_title TEXT DEFAULT 'Lahiru Priyankara | Full-Stack Developer',
   about_paragraphs TEXT[] DEFAULT ARRAY[]::TEXT[],
   tags TEXT[] DEFAULT ARRAY[]::TEXT[],
   email TEXT NOT NULL,
@@ -134,19 +134,19 @@ INSERT INTO public.profiles (
   linkedin_url,
   github_url
 ) VALUES (
-  'Yeshini Wickramasinghe',
-  'IT Undergraduate & Full-Stack Developer.',
-  'I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.',
+  'Lahiru Priyankara',
+  'Full-Stack Developer & Project Manager.',
+  'I build clean, responsive web apps — from React front-ends to scalable Node, Python & SQL back-ends — and manage end-to-end software delivery with reliable, high-performance architectures.',
   'Sri Lanka',
   true,
   ARRAY[
-    'I''m an IT undergraduate who enjoys turning ideas into working software — mostly web apps, mostly full-stack. I like the part of development where a messy requirement becomes a clean, usable interface, and I care about writing code that the next developer (often future me) can actually read.',
-    'Outside coursework, I take on freelance and personal projects to keep building things end to end — from database design to the last pixel of the UI. I''m comfortable working solo with a client directly, or slotting into an existing codebase.'
+    'I''m a Full-Stack Developer and Project Manager who enjoys turning complex ideas into scalable, production-ready software. I specialize in crafting clean, high-performance web applications and coordinating cross-functional teams to deliver projects on time.',
+    'With strong foundations in React, modern JavaScript, Python, C++, and database architecture, I bridge the gap between technical engineering and strategic delivery. Whether leading development from scratch or collaborating in modern agile environments, I focus on clean code and reliable results.'
   ],
-  ARRAY['IT Undergraduate', 'Freelance Developer', 'Sri Lanka', 'Open to Work'],
-  'yeshiniarchana@gmail.com',
-  'https://linkedin.com/in/yeshini',
-  'https://github.com/YeshiniWckramasinghe'
+  ARRAY['Full-Stack Developer', 'Project Manager', 'Sri Lanka', 'Open to Opportunities'],
+  'officiallahiru.p@gmail.com',
+  'www.linkedin.com/in/lahiru-priyankara-5972742ab',
+  'https://github.com/lahiru-priyankara'
 ) ON CONFLICT DO NOTHING;
 
 -- Skills
@@ -162,55 +162,6 @@ INSERT INTO public.skills (category, name, sort_order) VALUES
   ('tooling/', 'GitHub.git', 9)
 ON CONFLICT DO NOTHING;
 
--- Projects
-INSERT INTO public.projects (commit_hash, name, description, stack, github_url, demo_url, sort_order) VALUES
-  (
-    'c91a4f',
-    'StudyFlow — Student Study Planner',
-    'A full-stack app for managing academic subjects, assignments, and deadlines, with a real-time progress dashboard, a RESTful API on MongoDB, priority-based task management, and dark/light theming.',
-    ARRAY['React', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
-    'https://github.com/YeshiniWckramasinghe/studyflow',
-    '#',
-    1
-  ),
-  (
-    'a3f9c1',
-    'Seagills Lanka — Food Delivery System',
-    'A centralized platform to manage all parcel delivery operations — customers place delivery requests and track items in real time, while delivery staff and admins coordinate tasks for faster, accurate service.',
-    ARRAY['MongoDB', 'Express', 'Angular', 'React', 'Node.js'],
-    'https://github.com/YeshiniWckramasinghe/Seagills-Lanka-foodDelivery-system',
-    '#',
-    2
-  ),
-  (
-    '7be201',
-    'UniMart — Student Marketplace',
-    'A marketplace where university students can buy and sell items within campus, with listings, search, and messaging between buyers and sellers.',
-    ARRAY['React', 'Node.js', 'MongoDB'],
-    'https://github.com/YeshiniWckramasinghe/UniMart',
-    '#',
-    3
-  ),
-  (
-    'd418e7',
-    'Wildlife Safari Management System',
-    'Contributed to requirements analysis and system design — use case diagrams, CRC cards, and class diagrams — and helped build modules for user management, booking, payments, and notifications.',
-    ARRAY['HTML', 'CSS', 'PHP', 'Git', 'GitHub'],
-    'https://github.com/YeshiniWckramasinghe/Jungle-Book-Safari-Tours',
-    '#',
-    4
-  ),
-  (
-    'f02c56',
-    'Rental Vehicle Management System',
-    'Implemented booking management and vehicle maintenance scheduling features, and took part in system testing, debugging, and technical documentation to keep the system reliable.',
-    ARRAY['HTML', 'CSS3', 'JavaScript', 'Java', 'MySQL', 'Git', 'GitHub'],
-    'https://github.com/YeshiniWckramasinghe/DriveSwift-Java-Online-Vehicle-Rental-System-',
-    '#',
-    5
-  )
-ON CONFLICT DO NOTHING;
-
 -- Services
 INSERT INTO public.services (command, icon, title, description, sort_order) VALUES
   ('run website-development', '🌐', 'Website Development', 'Full websites built from scratch — planning, structure, and code, ready to deploy.', 1),
@@ -223,15 +174,15 @@ ON CONFLICT DO NOTHING;
 -- -----------------------------------------------------------------------------
 -- 5. MIGRATION FOR EXISTING DEPLOYMENTS: Add system & intro customization columns
 -- -----------------------------------------------------------------------------
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS site_name TEXT DEFAULT 'yeshini.dev';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS site_name TEXT DEFAULT 'Lahiru.dev';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_file_tab TEXT DEFAULT 'intro.js';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_greeting TEXT DEFAULT 'Hi, I''m';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS code_window_title TEXT DEFAULT 'developer.js';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_role TEXT DEFAULT 'Full-Stack Developer';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[];
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_stack TEXT[] DEFAULT ARRAY['React', 'C++', 'Sql', 'Python', 'Java']::TEXT[];
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_primary_label TEXT DEFAULT 'View My Work';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_secondary_label TEXT DEFAULT 'Contact Me';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Lahiru Priyankara | Full-Stack Developer';
 
 -- Extended About.jsx Customization Columns
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS about_file_tab TEXT DEFAULT 'About.jsx';
@@ -285,16 +236,16 @@ CREATE POLICY "Authenticated users can manage social_links" ON public.social_lin
 
 CREATE TABLE IF NOT EXISTS public.site_settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  site_name TEXT DEFAULT 'yeshini.dev',
-  browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer',
+  site_name TEXT DEFAULT 'Lahiru.dev',
+  browser_title TEXT DEFAULT 'Lahiru Priyankara | Full-Stack Developer',
   intro_file_tab TEXT DEFAULT 'intro.js',
   intro_greeting TEXT DEFAULT 'Hi, I''m',
-  hero_name TEXT DEFAULT 'Yeshini Wickramasinghe',
-  hero_headline TEXT DEFAULT 'IT Undergraduate & Full-Stack Developer.',
-  hero_sub_headline TEXT DEFAULT 'I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.',
+  hero_name TEXT DEFAULT 'Lahiru Priyankara',
+  hero_headline TEXT DEFAULT 'Full-Stack Developer & Project Manager.',
+  hero_sub_headline TEXT DEFAULT 'I build clean, responsive web apps — from React front-ends to scalable Node, Python & SQL back-ends — and manage end-to-end software delivery with reliable, high-performance architectures.',
   code_window_title TEXT DEFAULT 'developer.js',
   developer_role TEXT DEFAULT 'Full-Stack Developer',
-  developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[],
+  developer_stack TEXT[] DEFAULT ARRAY['React', 'C++', 'Sql', 'Python', 'Java']::TEXT[],
   based_in TEXT DEFAULT 'Sri Lanka',
   is_available BOOLEAN DEFAULT true,
   cta_primary_label TEXT DEFAULT 'View My Work',

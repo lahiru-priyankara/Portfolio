@@ -22,22 +22,22 @@ export default function Contact() {
             id: "fallback-email",
             platform: "email",
             title: "Email",
-            url: `mailto:${profile?.email || "yeshiniarchana@gmail.com"}`,
-            display_value: profile?.email || "yeshiniarchana@gmail.com",
+            url: `mailto:${profile?.email || "officiallahiru.p@gmail.com"}`,
+            display_value: profile?.email || "officiallahiru.p@gmail.com",
           },
           {
             id: "fallback-linkedin",
             platform: "linkedin",
             title: "LinkedIn",
-            url: profile?.linkedin_url || "https://linkedin.com/in/yeshini",
-            display_value: (profile?.linkedin_url || "linkedin.com/in/yeshini").replace(/^https?:\/\//i, ""),
+            url: profile?.linkedin_url || "https://www.linkedin.com/in/lahiru-priyankara-5972742ab",
+            display_value: (profile?.linkedin_url || "linkedin.com/in/lahiru-priyankara").replace(/^https?:\/\//i, ""),
           },
           {
             id: "fallback-github",
             platform: "github",
             title: "GitHub",
-            url: profile?.github_url || "https://github.com/YeshiniWckramasinghe",
-            display_value: (profile?.github_url || "github.com/YeshiniWckramasinghe").replace(/^https?:\/\//i, ""),
+            url: profile?.github_url || "https://github.com/lahiru-priyankara",
+            display_value: (profile?.github_url || "github.com/lahiru-priyankara").replace(/^https?:\/\//i, ""),
           },
         ];
 

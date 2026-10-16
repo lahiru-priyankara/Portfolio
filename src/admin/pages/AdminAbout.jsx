@@ -4,11 +4,11 @@ import { useToast } from "../context/useToast";
 import { usePortfolio } from "../../context/usePortfolio";
 
 const DEFAULT_PARAGRAPHS = [
-  "I'm an IT undergraduate who enjoys turning ideas into working software — mostly web apps, mostly full-stack. I like the part of development where a messy requirement becomes a clean, usable interface, and I care about writing code that the next developer (often future me) can actually read.",
-  "Outside coursework, I take on freelance and personal projects to keep building things end to end — from database design to the last pixel of the UI. I'm comfortable working solo with a client directly, or slotting into an existing codebase.",
+  "I'm a Full-Stack Developer and Project Manager who enjoys turning complex ideas into scalable, production-ready software. I specialize in crafting clean, high-performance web applications and coordinating cross-functional teams to deliver projects on time.",
+  "With strong foundations in React, modern JavaScript, Python, C++, and database architecture, I bridge the gap between technical engineering and strategic delivery. Whether leading development from scratch or collaborating in modern agile environments, I focus on clean code and reliable results.",
 ];
 
-const DEFAULT_TAGS = ["IT Undergraduate", "Freelance Developer", "Sri Lanka", "Open to Work"];
+const DEFAULT_TAGS = ["Full-Stack Developer", "Project Manager", "Sri Lanka", "Open to Opportunities"];
 
 export default function AdminAbout() {
   const toast = useToast();
@@ -44,9 +44,9 @@ export default function AdminAbout() {
     customItems: [], // [{ key: "interests", val: "AI & UI Systems" }]
 
     // Contact & Social Quick Links
-    email: "yeshiniarchana@gmail.com",
-    github_url: "https://github.com/YeshiniWckramasinghe",
-    linkedin_url: "https://linkedin.com/in/yeshini",
+    email: "officiallahiru.p@gmail.com",
+    github_url: "https://github.com/lahiru-priyankara",
+    linkedin_url: "www.linkedin.com/in/lahiru-priyankara-5972742ab",
   });
 
   useEffect(() => {

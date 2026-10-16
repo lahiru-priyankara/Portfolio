@@ -44,7 +44,10 @@ export async function getServices(req, res, next) {
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
+        if (data.length === 0) {
+          return res.json({ success: true, data: [] });
+        }
         // Merge Supabase data with rich local data (deliverables, vector icons, is_published)
         const merged = data.map((sp) => {
           const lp = localServices.find(

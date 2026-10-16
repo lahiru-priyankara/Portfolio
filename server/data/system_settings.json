@@ -1,17 +1,17 @@
 {
-  "site_name": "yeshini.dev",
-  "browser_title": "Yeshini Wickramasinghe | Full-Stack Developer",
+  "site_name": "Lahiru.dev",
+  "browser_title": "Lahiru Priyankara",
   "intro_file_tab": "intro.js",
   "intro_greeting": "Hi, I'm",
-  "hero_name": "Yeshini Wickramasinghe",
+  "hero_name": "Lahiru Priyankara",
   "hero_headline": "IT Undergraduate & Full-Stack Developer.",
-  "hero_sub_headline": "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+  "hero_sub_headline": "I'm a Web Developer & Project Manager passionate about transforming ideas into powerful digital experiences. I build modern websites, scalable software solutions, and innovative digital products that empower businesses to grow.",
   "code_window_title": "developer.js",
   "developer_role": "Full-Stack Developer",
   "developer_stack": [
     "React",
-    "Node.js",
-    "MongoDB",
+    "C++",
+    "Sql",
     "Python",
     "Java"
   ],
@@ -21,6 +21,6 @@
   "cta_secondary_label": "Contact Me",
   "avatar_url": "/avatar.jpg",
   "show_avatar": true,
-  "favicon_url": "/favicon.svg",
-  "updated_at": "2026-10-15T15:39:29.992Z"
+  "favicon_url": "https://lgacksaciawxmqzxpnxv.supabase.co/storage/v1/object/public/site-assets/favicon-1792090755466.png",
+  "updated_at": "2026-10-16T07:10:45.845Z"
 }

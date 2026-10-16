@@ -8,12 +8,12 @@ export default function Hero() {
   const { profile, settings } = usePortfolio();
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  const name = settings?.hero_name || profile?.full_name || "Yeshini Wickramasinghe";
+  const name = settings?.hero_name || profile?.full_name || "Lahiru Priyankara";
   const headline = settings?.hero_headline || profile?.headline || "IT Undergraduate & Full-Stack Developer.";
   const subHeadline =
     settings?.hero_sub_headline ||
     profile?.sub_headline ||
-    "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.";
+    "I'm a Web Developer & Project Manager passionate about transforming ideas into powerful digital experiences. I build modern websites, scalable software solutions, and innovative digital products that empower businesses to grow.";
   const basedIn = settings?.based_in || profile?.based_in || "Sri Lanka";
   const isAvailable = settings?.is_available ?? profile?.is_available ?? true;
 

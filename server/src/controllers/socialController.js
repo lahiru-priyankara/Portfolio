@@ -75,7 +75,10 @@ export async function getSocialLinks(req, res, next) {
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
+        if (data.length === 0) {
+          return res.json({ success: true, data: [] });
+        }
         // Merge Supabase with local data
         const merged = data.map((dbLink) => {
           const loc = localLinks.find(

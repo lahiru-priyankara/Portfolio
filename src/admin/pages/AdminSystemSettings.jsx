@@ -12,17 +12,17 @@ export default function AdminSystemSettings() {
   const [copiedSql, setCopiedSql] = useState(false);
 
   const [form, setForm] = useState({
-    site_name: "yeshini.dev",
-    browser_title: "Yeshini Wickramasinghe | Full-Stack Developer",
+    site_name: "Lahiru.dev",
+    browser_title: "Lahiru Priyankara | Full-Stack Developer",
     intro_file_tab: "intro.js",
     intro_greeting: "Hi, I'm",
-    hero_name: "Yeshini Wickramasinghe",
-    hero_headline: "IT Undergraduate & Full-Stack Developer.",
+    hero_name: "Lahiru Priyankara",
+    hero_headline: "Full-Stack Developer & Project Manager.",
     hero_sub_headline:
-      "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+      "I build clean, responsive web apps — from React front-ends to scalable Node, Python & SQL back-ends — and manage end-to-end software delivery with reliable, high-performance architectures.",
     code_window_title: "developer.js",
     developer_role: "Full-Stack Developer",
-    developer_stack_text: "React, Node.js, MongoDB, Python, Java",
+    developer_stack_text: "React, C++, Sql, Python, Java",
     based_in: "Sri Lanka",
     is_available: true,
     cta_primary_label: "View My Work",
@@ -39,18 +39,18 @@ export default function AdminSystemSettings() {
         if (res.data) {
           const s = res.data;
           setForm({
-            site_name: s.site_name || "yeshini.dev",
-            browser_title: s.browser_title || "Yeshini Wickramasinghe | Full-Stack Developer",
+            site_name: s.site_name || "Lahiru.dev",
+            browser_title: s.browser_title || "Lahiru Priyankara | Full-Stack Developer",
             intro_file_tab: s.intro_file_tab || "intro.js",
             intro_greeting: s.intro_greeting || "Hi, I'm",
-            hero_name: s.hero_name || "Yeshini Wickramasinghe",
-            hero_headline: s.hero_headline || "IT Undergraduate & Full-Stack Developer.",
+            hero_name: s.hero_name || "Lahiru Priyankara",
+            hero_headline: s.hero_headline || "Full-Stack Developer & Project Manager.",
             hero_sub_headline: s.hero_sub_headline || "",
             code_window_title: s.code_window_title || "developer.js",
             developer_role: s.developer_role || "Full-Stack Developer",
             developer_stack_text: Array.isArray(s.developer_stack)
               ? s.developer_stack.join(", ")
-              : "React, Node.js, MongoDB, Python, Java",
+              : "React, C++, Sql, Python, Java",
             based_in: s.based_in || "Sri Lanka",
             is_available: s.is_available ?? true,
             cta_primary_label: s.cta_primary_label || "View My Work",
@@ -124,7 +124,7 @@ export default function AdminSystemSettings() {
       .filter(Boolean);
 
     const payload = {
-      site_name: form.site_name.trim() || "yeshini.dev",
+      site_name: form.site_name.trim() || "Lahiru.dev",
       browser_title: form.browser_title.trim(),
       intro_file_tab: form.intro_file_tab.trim() || "intro.js",
       intro_greeting: form.intro_greeting.trim() || "Hi, I'm",
@@ -175,15 +175,15 @@ export default function AdminSystemSettings() {
 
   const handleCopySql = () => {
     const sql = `-- Run this in Supabase SQL Editor for complete database synchronization:
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS site_name TEXT DEFAULT 'yeshini.dev';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS site_name TEXT DEFAULT 'Lahiru.dev';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_file_tab TEXT DEFAULT 'intro.js';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS intro_greeting TEXT DEFAULT 'Hi, I''m';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS code_window_title TEXT DEFAULT 'developer.js';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_role TEXT DEFAULT 'Full-Stack Developer';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_stack TEXT[] DEFAULT ARRAY['React', 'Node.js', 'MongoDB', 'Python', 'Java']::TEXT[];
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS developer_stack TEXT[] DEFAULT ARRAY['React', 'C++', 'Sql', 'Python', 'Java']::TEXT[];
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_primary_label TEXT DEFAULT 'View My Work';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cta_secondary_label TEXT DEFAULT 'Contact Me';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Yeshini Wickramasinghe | Full-Stack Developer';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS browser_title TEXT DEFAULT 'Lahiru Priyankara | Full-Stack Developer';
 
 -- Projects table columns
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true;
@@ -268,7 +268,7 @@ CREATE POLICY "Authenticated users can manage social links" ON public.social_lin
                 className="admin-input"
                 value={form.site_name}
                 onChange={handleChange}
-                placeholder="e.g. Yashi.dev or yeshini.dev"
+                placeholder="e.g. Lahiru.dev"
                 required
               />
               <span style={{ fontSize: 11.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
@@ -285,7 +285,7 @@ CREATE POLICY "Authenticated users can manage social links" ON public.social_lin
                 className="admin-input"
                 value={form.browser_title}
                 onChange={handleChange}
-                placeholder="e.g. Yeshini Wickramasinghe | Full-Stack Developer"
+                placeholder="e.g. Lahiru Priyankara | Full-Stack Developer"
               />
               <span style={{ fontSize: 11.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
                 Shown on browser tab titles and bookmarks.
@@ -561,7 +561,7 @@ CREATE POLICY "Authenticated users can manage social links" ON public.social_lin
                     marginLeft: 6,
                   }}
                 >
-                  {form.site_name || "yeshini.dev"}
+                  {form.site_name || "Lahiru.dev"}
                 </strong>
               </div>
 
@@ -650,7 +650,7 @@ CREATE POLICY "Authenticated users can manage social links" ON public.social_lin
                 className="admin-input"
                 value={form.hero_name}
                 onChange={handleChange}
-                placeholder="Yeshini Wickramasinghe"
+                placeholder="Lahiru Priyankara"
                 required
               />
             </div>

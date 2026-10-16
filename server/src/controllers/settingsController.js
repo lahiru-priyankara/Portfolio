@@ -8,24 +8,24 @@ const __dirname = path.dirname(__filename);
 const SETTINGS_FILE = path.resolve(__dirname, "../../data/system_settings.json");
 
 const DEFAULT_SETTINGS = {
-  site_name: "yeshini.dev",
-  browser_title: "Yeshini Wickramasinghe | Full-Stack Developer",
+  site_name: "Lahiru.dev",
+  browser_title: "Lahiru Priyankara",
   intro_file_tab: "intro.js",
   intro_greeting: "Hi, I'm",
-  hero_name: "Yeshini Wickramasinghe",
+  hero_name: "Lahiru Priyankara",
   hero_headline: "IT Undergraduate & Full-Stack Developer.",
   hero_sub_headline:
-    "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+    "I'm a Web Developer & Project Manager passionate about transforming ideas into powerful digital experiences. I build modern websites, scalable software solutions, and innovative digital products that empower businesses to grow.",
   code_window_title: "developer.js",
   developer_role: "Full-Stack Developer",
-  developer_stack: ["React", "Node.js", "MongoDB", "Python", "Java"],
+  developer_stack: ["React", "C++", "Sql", "Python", "Java"],
   based_in: "Sri Lanka",
   is_available: true,
   cta_primary_label: "View My Work",
   cta_secondary_label: "Contact Me",
   avatar_url: "/avatar.jpg",
   show_avatar: true,
-  favicon_url: "/favicon.svg",
+  favicon_url: "https://lgacksaciawxmqzxpnxv.supabase.co/storage/v1/object/public/site-assets/favicon-1792090755466.png",
 };
 
 const STORAGE_BUCKET = "site-assets";

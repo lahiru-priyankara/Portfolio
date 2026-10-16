@@ -17,7 +17,7 @@ export default function Nav() {
   const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
 
-  const brandName = settings?.site_name || "yeshini.dev";
+  const brandName = settings?.site_name || "Lahiru.dev";
 
   // highlight the tab whose section is currently in view
   useEffect(() => {

@@ -847,7 +847,7 @@ export default function AdminProjects() {
                       className="admin-input"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="e.g. StudyFlow — Student Planner"
+                      placeholder="e.g. Enterprise Portfolio Platform"
                       required
                       style={{ width: "100%", minWidth: 0 }}
                     />
@@ -956,7 +956,7 @@ export default function AdminProjects() {
                       className="admin-input"
                       value={form.github_url}
                       onChange={(e) => setForm({ ...form, github_url: e.target.value })}
-                      placeholder="https://github.com/YeshiniWckramasinghe/..."
+                      placeholder="https://github.com/lahiru-priyankara/..."
                       required
                       style={{ width: "100%", minWidth: 0 }}
                     />
@@ -1027,7 +1027,7 @@ export default function AdminProjects() {
                           handleAddContributor();
                         }
                       }}
-                      placeholder="Add by GitHub username (e.g. YeshiniWckramasinghe or octocat)"
+                      placeholder="Add by GitHub username (e.g. lahiru-priyankara or octocat)"
                       style={{ flex: "1 1 240px", minWidth: 0 }}
                     />
                     <button

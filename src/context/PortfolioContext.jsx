@@ -4,17 +4,17 @@ import { portfolioApi } from "../api/portfolioApi";
 
 // Default settings for site branding and intro
 const DEFAULT_SETTINGS = {
-  site_name: "yeshini.dev",
-  browser_title: "Yeshini Wickramasinghe | Full-Stack Developer",
+  site_name: "Lahiru.dev",
+  browser_title: "Lahiru Priyankara | Full-Stack Developer",
   intro_file_tab: "intro.js",
   intro_greeting: "Hi, I'm",
-  hero_name: "Yeshini Wickramasinghe",
-  hero_headline: "IT Undergraduate & Full-Stack Developer.",
+  hero_name: "Lahiru Priyankara",
+  hero_headline: "Full-Stack Developer & Project Manager.",
   hero_sub_headline:
-    "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+    "I build clean, responsive web apps — from React front-ends to scalable Node, Python & SQL back-ends — and manage end-to-end software delivery with reliable, high-performance architectures.",
   code_window_title: "developer.js",
   developer_role: "Full-Stack Developer",
-  developer_stack: ["React", "Node.js", "MongoDB", "Python", "Java"],
+  developer_stack: ["React", "C++", "Sql", "Python", "Java"],
   based_in: "Sri Lanka",
   is_available: true,
   cta_primary_label: "View My Work",
@@ -26,223 +26,23 @@ const DEFAULT_SETTINGS = {
 
 // Default fallback data (used if backend is not yet started or during initial setup)
 const DEFAULT_PROFILE = {
-  full_name: "Yeshini Wickramasinghe",
-  headline: "IT Undergraduate & Full-Stack Developer.",
+  full_name: "Lahiru Priyankara",
+  headline: "Full-Stack Developer & Project Manager.",
   sub_headline:
-    "I build clean, responsive web apps — from React front-ends to Node & MongoDB back-ends — and I take on freelance projects for clients who need reliable, well-documented code.",
+    "I build clean, responsive web apps — from React front-ends to scalable Node, Python & SQL back-ends — and manage end-to-end software delivery with reliable, high-performance architectures.",
   based_in: "Sri Lanka",
   is_available: true,
   about_paragraphs: [
-    "I'm an IT undergraduate who enjoys turning ideas into working software — mostly web apps, mostly full-stack. I like the part of development where a messy requirement becomes a clean, usable interface, and I care about writing code that the next developer (often future me) can actually read.",
-    "Outside coursework, I take on freelance and personal projects to keep building things end to end — from database design to the last pixel of the UI. I'm comfortable working solo with a client directly, or slotting into an existing codebase.",
+    "I'm a Full-Stack Developer and Project Manager who enjoys turning complex ideas into scalable, production-ready software. I specialize in crafting clean, high-performance web applications and coordinating cross-functional teams to deliver projects on time.",
+    "With strong foundations in React, modern JavaScript, Python, C++, and database architecture, I bridge the gap between technical engineering and strategic delivery. Whether leading development from scratch or collaborating in modern agile environments, I focus on clean code and reliable results.",
   ],
-  tags: ["IT Undergraduate", "Freelance Developer", "Sri Lanka", "Open to Work"],
-  email: "yeshiniarchana@gmail.com",
-  linkedin_url: "https://linkedin.com/in/yeshini",
-  github_url: "https://github.com/YeshiniWckramasinghe",
+  tags: ["Full-Stack Developer", "Project Manager", "Sri Lanka", "Open to Opportunities"],
+  email: "officiallahiru.p@gmail.com",
+  linkedin_url: "www.linkedin.com/in/lahiru-priyankara-5972742ab",
+  github_url: "https://github.com/lahiru-priyankara",
 };
 
-const DEFAULT_PROJECTS = [
-  {
-    id: "p1",
-    commit_hash: "c91a4f",
-    name: "StudyFlow — Student Study Planner",
-    description:
-      "A full-stack app for managing academic subjects, assignments, and deadlines, with a real-time progress dashboard, a RESTful API on MongoDB, priority-based task management, and dark/light theming.",
-    stack: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
-    github_url: "https://github.com/YeshiniWckramasinghe/studyflow",
-    demo_url: "https://studyflow-preview.dev",
-    status: "ongoing",
-    start_date: "2024-06-01",
-    end_date: "2024-11-30",
-    images: [
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
-    ],
-    demo_video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    tracking_data: {
-      milestone_title: "47 days until next preview build",
-      milestone_date: "Nov 30th",
-      milestone_progress: 55,
-      last_build: "Sep 30th",
-      section_title: "Development Sprint - 86%",
-      total_tasks_label: "670 Tasks",
-      changes_last_24h: "22 Changes in last 24hrs",
-      items: [
-        { name: "Frontend / UI", current: 196, total: 197, unit: "%", color: "slate" },
-        { name: "Backend / API", current: 119, total: 131, unit: "%", color: "steel" },
-        { name: "Database & Storage", current: 84, total: 87, unit: "%", color: "zinc" },
-        { name: "Core Features & Code", current: 181, total: 255, unit: "%", color: "charcoal" },
-        { name: "Testing & Bug Fixes", current: 0, total: 0, unit: "Fixed", color: "silver" },
-      ],
-    },
-    contributors: [
-      {
-        username: "YeshiniWckramasinghe",
-        name: "Yeshini W.",
-        avatar_url: "https://avatars.githubusercontent.com/u/148785810?v=4",
-        html_url: "https://github.com/YeshiniWckramasinghe",
-        contributions: 42,
-      },
-      {
-        username: "kasun-silva",
-        name: "Kasun Silva",
-        avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-        html_url: "https://github.com",
-        contributions: 18,
-      },
-    ],
-    is_featured: true,
-    sort_order: 1,
-  },
-  {
-    id: "p2",
-    commit_hash: "a3f9c1",
-    name: "Seagills Lanka — Food Delivery System",
-    description:
-      "A centralized platform to manage all parcel delivery operations — customers place delivery requests and track items in real time, while delivery staff and admins coordinate tasks for faster, accurate service.",
-    stack: ["MongoDB", "Express", "Angular", "React", "Node.js"],
-    github_url: "https://github.com/YeshiniWckramasinghe/Seagills-Lanka-foodDelivery-system",
-    demo_url: "#",
-    status: "ongoing",
-    start_date: "2024-04-15",
-    end_date: "2024-12-15",
-    images: [
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1555421689-491a97ff2040?w=800&auto=format&fit=crop&q=80"
-    ],
-    demo_video_url: "",
-    tracking_data: {
-      milestone_title: "62 days until beta release",
-      milestone_date: "Dec 15th",
-      milestone_progress: 68,
-      last_build: "Oct 10th",
-      section_title: "Sprint 4 Delivery - 78%",
-      total_tasks_label: "340 Tasks",
-      changes_last_24h: "14 Changes in last 24hrs",
-      items: [
-        { name: "Frontend / UI", current: 88, total: 95, unit: "%", color: "slate" },
-        { name: "Backend / API", current: 72, total: 80, unit: "%", color: "steel" },
-        { name: "Database & Storage", current: 45, total: 45, unit: "%", color: "zinc" },
-        { name: "Core Features & Code", current: 142, total: 190, unit: "%", color: "charcoal" },
-        { name: "Testing & Bug Fixes", current: 3, total: 3, unit: "Fixed", color: "silver" },
-      ],
-    },
-    contributors: [
-      {
-        username: "YeshiniWckramasinghe",
-        name: "Yeshini W.",
-        avatar_url: "https://avatars.githubusercontent.com/u/148785810?v=4",
-        html_url: "https://github.com/YeshiniWckramasinghe",
-        contributions: 35,
-      },
-      {
-        username: "dineth-perera",
-        name: "Dineth Perera",
-        avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-        html_url: "https://github.com",
-        contributions: 22,
-      },
-    ],
-    is_featured: true,
-    sort_order: 2,
-  },
-  {
-    id: "p3",
-    commit_hash: "7be201",
-    name: "UniMart — Student Marketplace",
-    description:
-      "A marketplace where university students can buy and sell items within campus, with listings, search, and messaging between buyers and sellers.",
-    stack: ["React", "Node.js", "MongoDB"],
-    github_url: "https://github.com/YeshiniWckramasinghe/UniMart",
-    demo_url: "#",
-    status: "completed",
-    start_date: "2023-09-01",
-    end_date: "2024-02-28",
-    images: [
-      "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&auto=format&fit=crop&q=80"
-    ],
-    demo_video_url: "",
-    tracking_data: {},
-    contributors: [
-      {
-        username: "YeshiniWckramasinghe",
-        name: "Yeshini W.",
-        avatar_url: "https://avatars.githubusercontent.com/u/148785810?v=4",
-        html_url: "https://github.com/YeshiniWckramasinghe",
-        contributions: 28,
-      },
-    ],
-    is_featured: true,
-    sort_order: 3,
-  },
-  {
-    id: "p4",
-    commit_hash: "d418e7",
-    name: "Wildlife Safari Management System",
-    description:
-      "Contributed to requirements analysis and system design — use case diagrams, CRC cards, and class diagrams — and helped build modules for user management, booking, payments, and notifications.",
-    stack: ["HTML", "CSS", "PHP", "Git", "GitHub"],
-    github_url: "https://github.com/YeshiniWckramasinghe/Jungle-Book-Safari-Tours",
-    demo_url: "#",
-    status: "completed",
-    start_date: "2023-03-01",
-    end_date: "2023-08-15",
-    images: [
-      "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=800&auto=format&fit=crop&q=80"
-    ],
-    demo_video_url: "",
-    tracking_data: {},
-    contributors: [
-      {
-        username: "YeshiniWckramasinghe",
-        name: "Yeshini W.",
-        avatar_url: "https://avatars.githubusercontent.com/u/148785810?v=4",
-        html_url: "https://github.com/YeshiniWckramasinghe",
-        contributions: 31,
-      },
-      {
-        username: "sahan-fernando",
-        name: "Sahan Fernando",
-        avatar_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-        html_url: "https://github.com",
-        contributions: 26,
-      },
-    ],
-    is_featured: true,
-    sort_order: 4,
-  },
-  {
-    id: "p5",
-    commit_hash: "f02c56",
-    name: "Rental Vehicle Management System",
-    description:
-      "Implemented booking management and vehicle maintenance scheduling features, and took part in system testing, debugging, and technical documentation to keep the system reliable.",
-    stack: ["HTML", "CSS3", "JavaScript", "Java", "MySQL", "Git", "GitHub"],
-    github_url: "https://github.com/YeshiniWckramasinghe/DriveSwift-Java-Online-Vehicle-Rental-System-",
-    demo_url: "#",
-    status: "completed",
-    start_date: "2022-10-01",
-    end_date: "2023-02-20",
-    images: [
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80"
-    ],
-    demo_video_url: "",
-    tracking_data: {},
-    contributors: [
-      {
-        username: "YeshiniWckramasinghe",
-        name: "Yeshini W.",
-        avatar_url: "https://avatars.githubusercontent.com/u/148785810?v=4",
-        html_url: "https://github.com/YeshiniWckramasinghe",
-        contributions: 40,
-      },
-    ],
-    is_featured: true,
-    sort_order: 5,
-  },
-];
+const DEFAULT_PROJECTS = [];
 
 const DEFAULT_SKILLS = [
   // Frontend
@@ -339,33 +139,53 @@ const DEFAULT_SERVICES = [
 
 const DEFAULT_SOCIAL_LINKS = [
   {
-    id: "soc-github",
-    platform: "github",
-    title: "GitHub",
-    url: "https://github.com/YeshiniWckramasinghe",
-    display_value: "github.com/YeshiniWckramasinghe",
-    category: "developer",
+    id: "35aa00ae-db43-4315-bbbc-365287522501",
+    platform: "email",
+    title: "Email",
+    url: "mailto:officiallahiru.p@gmail.com",
+    display_value: "officiallahiru.p@gmail.com",
+    category: "direct",
     sort_order: 1,
     is_active: true,
   },
   {
-    id: "soc-linkedin",
+    id: "374f1ec5-0558-45ec-b44c-9f79e5647cba",
     platform: "linkedin",
     title: "LinkedIn",
-    url: "https://linkedin.com/in/yeshini",
-    display_value: "linkedin.com/in/yeshini",
+    url: "https://www.linkedin.com/in/lahiru-priyankara-5972742ab",
+    display_value: "linkedin.com/in/lahiru-priyankara",
     category: "professional",
     sort_order: 2,
     is_active: true,
   },
   {
-    id: "soc-email",
-    platform: "email",
-    title: "Email",
-    url: "mailto:yeshiniarchana@gmail.com",
-    display_value: "yeshiniarchana@gmail.com",
-    category: "direct",
+    id: "d8eb1a15-b778-439f-9fc6-fe6903f7d1bc",
+    platform: "facebook",
+    title: "Facebook",
+    url: "https://facebook.com",
+    display_value: "facebook.com",
+    category: "social",
     sort_order: 3,
+    is_active: true,
+  },
+  {
+    id: "efc8b824-00d9-43c2-9e19-f54f15d742fc",
+    platform: "instagram",
+    title: "Instagram",
+    url: "https://instagram.com",
+    display_value: "instagram.com",
+    category: "social",
+    sort_order: 4,
+    is_active: true,
+  },
+  {
+    id: "8c3fe80a-9957-41a4-9463-547df1c08f43",
+    platform: "github",
+    title: "GitHub",
+    url: "https://github.com/lahiru-priyankara",
+    display_value: "github.com/lahiru-priyankara",
+    category: "developer",
+    sort_order: 5,
     is_active: true,
   },
 ];
@@ -446,22 +266,22 @@ export function PortfolioProvider({ children }) {
           setIsBackendConnected(true);
         }
 
-        if (projRes.status === "fulfilled" && projRes.value.data?.length > 0) {
+        if (projRes.status === "fulfilled" && Array.isArray(projRes.value.data)) {
           setProjects(projRes.value.data);
           setIsBackendConnected(true);
         }
 
-        if (skillRes.status === "fulfilled" && skillRes.value.data?.length > 0) {
+        if (skillRes.status === "fulfilled" && Array.isArray(skillRes.value.data)) {
           setSkills(skillRes.value.data);
           setIsBackendConnected(true);
         }
 
-        if (servRes.status === "fulfilled" && servRes.value.data?.length > 0) {
+        if (servRes.status === "fulfilled" && Array.isArray(servRes.value.data)) {
           setServices(servRes.value.data);
           setIsBackendConnected(true);
         }
 
-        if (socRes.status === "fulfilled" && socRes.value.data?.length > 0) {
+        if (socRes.status === "fulfilled" && Array.isArray(socRes.value.data)) {
           setSocialLinks(socRes.value.data);
           setIsBackendConnected(true);
         }

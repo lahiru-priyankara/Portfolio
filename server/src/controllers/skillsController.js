@@ -74,7 +74,10 @@ export async function getSkills(req, res, next) {
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
+        if (data.length === 0) {
+          return res.json({ success: true, data: [] });
+        }
         dbSkills = data;
       }
     } catch {

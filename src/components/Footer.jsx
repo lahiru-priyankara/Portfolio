@@ -4,7 +4,7 @@ import "./Footer.css";
 export default function Footer({ onOpenAdmin }) {
   const { settings, profile } = usePortfolio();
   const year = new Date().getFullYear();
-  const displayName = settings?.hero_name || profile?.full_name || "Yeshini Wickramasinghe";
+  const displayName = settings?.hero_name || profile?.full_name || "Lahiru Priyankara";
 
   return (
     <footer className="footer">

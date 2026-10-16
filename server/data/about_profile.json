@@ -1,0 +1,44 @@
+{
+  "full_name": "Lahiru Priyankara",
+  "headline": "IT Undergraduate & Full-Stack Developer.",
+  "sub_headline": "I'm a Web Developer & Project Manager passionate about transforming ideas into powerful digital experiences. I build modern websites, scalable software solutions, and innovative digital products that empower businesses to grow.",
+  "based_in": "Sri Lanka",
+  "is_available": true,
+  "intro_file_tab": "intro.js",
+  "intro_greeting": "Hi, I'm",
+  "code_window_title": "developer.js",
+  "developer_role": "Full-Stack Developer",
+  "developer_stack": [
+    "React",
+    "C++",
+    "Sql",
+    "Python",
+    "Java"
+  ],
+  "cta_primary_label": "View My Work",
+  "cta_secondary_label": "Contact Me",
+  "browser_title": "Lahiru Priyankara",
+  "about_paragraphs": [
+    "I'm a passionate Web Developer, Project Manager, and Entrepreneur focused on building innovative digital solutions that help businesses grow and succeed. I specialize in modern web technologies, software development, UI/UX design, and digital transformation, turning ideas into practical, scalable, and user-friendly solutions.",
+    "As the founder of Sapphiro Solutions, I strive to combine technology, creativity, and strategic thinking to solve real-world business challenges and create meaningful digital experiences.",
+    "My Mission: turning ideas into digital dominance."
+  ],
+  "tags": [
+    "IT Instructor",
+    "Project Management",
+    "UI/UX",
+    "Marketing",
+    "Web Engineering"
+  ],
+  "email": "officiallahiru.p@gmail.com",
+  "linkedin_url": "www.linkedin.com/in/lahiru-priyankara-5972742ab",
+  "github_url": "https://github.com/lahiru-priyankara",
+  "about_file_tab": "About.jsx",
+  "about_title_prefix": "A little",
+  "about_title_highlight": "about me",
+  "inspector_title": "inspector.profile",
+  "inspector_education": "BSc (Hons) in Information Technology",
+  "inspector_focus": "Full-Stack Web Engineering",
+  "inspector_experience": "Enterprise level Project Development ",
+  "inspector_items": []
+}

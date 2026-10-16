@@ -1,13 +1,5 @@
 [
   {
-    "id": "facf8b87-9ce1-4b57-aef2-0f01a650e542",
-    "name": "Audit Tester",
-    "email": "audit@test.com",
-    "message": "E2E testing message action verification",
-    "status": "unread",
-    "created_at": "2026-10-16T07:52:09.410006+00:00"
-  },
-  {
     "id": "755b90cb-8898-4ee7-87af-62dc202238d0",
     "name": "lahiru-priyankara",
     "email": "officiallahiru.p@gmail.com",

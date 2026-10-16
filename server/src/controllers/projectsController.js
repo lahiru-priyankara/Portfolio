@@ -262,7 +262,10 @@ export async function getProjects(req, res, next) {
         .select("*")
         .order("sort_order", { ascending: true });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
+        if (data.length === 0) {
+          return res.json({ success: true, data: [] });
+        }
         // Merge Supabase data with local projects to ensure live metrics, commit hash & media are accurate
         let hasLocalIdUpdates = false;
         const merged = data.map((sp) => {

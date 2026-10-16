@@ -20,7 +20,7 @@ export default function AdminNav({ activeTab, onSelectTab, onExitAdmin }) {
   const { user, logout } = useAdminAuth();
   const { settings } = usePortfolio();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const siteName = settings?.site_name || "yeshini.dev";
+  const siteName = settings?.site_name || "Lahiru.dev";
 
   const handleConfirmLogout = () => {
     setShowLogoutModal(false);
