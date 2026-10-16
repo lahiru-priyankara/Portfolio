@@ -623,91 +623,77 @@ export async function togglePublishProject(req, res, next) {
   try {
     const { id } = req.params;
     const { is_published } = req.body;
-    const currentList = readLocalProjects();
-    let updatedItem = null;
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-    const updatedList = currentList.map((p) => {
-      const isMatch =
-        String(p.id) === String(id) ||
-        p.commit_hash === id ||
-        (req.body.commit_hash && p.commit_hash === req.body.commit_hash) ||
-        (req.body.name && p.name === req.body.name);
-
-      if (isMatch) {
-        const nextVal = is_published !== undefined ? Boolean(is_published) : !p.is_published;
-        const trackingData = {
-          ...(p.tracking_data || {}),
-          is_published: nextVal,
-        };
-        updatedItem = {
-          ...p,
-          is_published: nextVal,
-          tracking_data: trackingData,
-          updated_at: new Date().toISOString(),
-        };
-        return updatedItem;
-      }
-      return p;
-    });
-
-    if (!updatedItem) {
-      // Find in Supabase directly
-      try {
-        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-        if (isUUID) {
-          const { data: dbProj } = await supabaseAdmin.from("projects").select("*").eq("id", id).maybeSingle();
-          if (dbProj) {
-            const nextVal = is_published !== undefined ? Boolean(is_published) : !(dbProj.tracking_data?.is_published !== false);
-            updatedItem = {
-              ...dbProj,
-              is_published: nextVal,
-              tracking_data: { ...(dbProj.tracking_data || {}), is_published: nextVal },
-              updated_at: new Date().toISOString(),
-            };
-            updatedList.push(updatedItem);
-          }
+    // 1. Fetch current database record directly
+    let dbProj = null;
+    try {
+      if (isUUID) {
+        const { data } = await supabaseAdmin.from("projects").select("*").eq("id", id).maybeSingle();
+        dbProj = data;
+      } else {
+        const { data } = await supabaseAdmin.from("projects").select("*").eq("commit_hash", id).maybeSingle();
+        dbProj = data;
+        if (!dbProj) {
+          const { data: byName } = await supabaseAdmin.from("projects").select("*").eq("name", id).maybeSingle();
+          dbProj = byName;
         }
-      } catch {
-        // ignore
       }
+    } catch (err) {
+      console.warn("Supabase fetch before toggle:", err.message);
     }
 
-    if (!updatedItem) {
+    const currentList = readLocalProjects();
+    const localProj = currentList.find(
+      (p) => String(p.id) === String(id) || p.commit_hash === id || (dbProj && p.commit_hash === dbProj.commit_hash)
+    );
+
+    const baseProj = dbProj || localProj;
+    if (!baseProj) {
       return res.status(404).json({ success: false, error: "Project not found" });
     }
 
-    writeLocalProjects(updatedList);
+    const currentVal =
+      dbProj?.is_published !== undefined && dbProj?.is_published !== null
+        ? Boolean(dbProj.is_published)
+        : dbProj?.tracking_data?.is_published !== undefined
+        ? Boolean(dbProj.tracking_data.is_published)
+        : localProj?.is_published !== undefined
+        ? Boolean(localProj.is_published)
+        : true;
 
-    // Sync to Supabase
+    const nextVal = is_published !== undefined ? Boolean(is_published) : !currentVal;
+
+    const trackingData = {
+      ...(baseProj.tracking_data || {}),
+      is_published: nextVal,
+    };
+
+    const updatedItem = {
+      ...baseProj,
+      is_published: nextVal,
+      tracking_data: trackingData,
+      updated_at: new Date().toISOString(),
+    };
+
+    // 2. Persist to Supabase
     try {
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-      if (isUUID) {
-        const { error } = await supabaseAdmin
-          .from("projects")
-          .update({
-            is_published: updatedItem.is_published,
-            tracking_data: updatedItem.tracking_data,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", id);
-
-        if (error && (error.code === "42703" || error.message?.includes("column"))) {
-          // If is_published column doesn't exist, tracking_data stores it safely
-          await supabaseAdmin
-            .from("projects")
-            .update({
-              tracking_data: updatedItem.tracking_data,
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", id);
-        }
-      } else {
+      if (isUUID || dbProj?.id) {
         await supabaseAdmin
           .from("projects")
           .update({
-            is_published: updatedItem.is_published,
-            tracking_data: updatedItem.tracking_data,
-            updated_at: new Date().toISOString(),
+            is_published: nextVal,
+            tracking_data: trackingData,
+            updated_at: updatedItem.updated_at,
+          })
+          .eq("id", dbProj?.id || id);
+      } else if (updatedItem.commit_hash) {
+        await supabaseAdmin
+          .from("projects")
+          .update({
+            is_published: nextVal,
+            tracking_data: trackingData,
+            updated_at: updatedItem.updated_at,
           })
           .eq("commit_hash", updatedItem.commit_hash);
       }
@@ -715,10 +701,19 @@ export async function togglePublishProject(req, res, next) {
       console.warn("Supabase toggle publish notice:", dbErr.message);
     }
 
+    // 3. Keep local JSON updated
+    const updatedList = currentList.map((p) => {
+      if (String(p.id) === String(id) || p.commit_hash === id || (updatedItem && p.commit_hash === updatedItem.commit_hash)) {
+        return { ...p, is_published: nextVal, tracking_data: trackingData, updated_at: updatedItem.updated_at };
+      }
+      return p;
+    });
+    writeLocalProjects(updatedList);
+
     return res.json({
       success: true,
       data: updatedItem,
-      message: `Project ${updatedItem.is_published ? "published" : "unpublished"} successfully`,
+      message: `Project ${nextVal ? "published" : "unpublished"} successfully`,
     });
   } catch (err) {
     next(err);
@@ -731,27 +726,26 @@ export async function togglePublishProject(req, res, next) {
 export async function deleteProject(req, res, next) {
   try {
     const { id } = req.params;
-    const currentList = readLocalProjects();
-    const target = currentList.find((p) => String(p.id) === String(id) || p.commit_hash === id);
-    const updatedList = currentList.filter(
-      (p) => String(p.id) !== String(id) && p.commit_hash !== id && (target ? p.name !== target.name : true)
-    );
-    writeLocalProjects(updatedList);
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
+    // 1. Delete from Supabase
     try {
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       if (isUUID) {
         await supabaseAdmin.from("projects").delete().eq("id", id);
-      } else if (target?.commit_hash) {
-        await supabaseAdmin.from("projects").delete().eq("commit_hash", target.commit_hash);
-      } else if (target?.name) {
-        await supabaseAdmin.from("projects").delete().eq("name", target.name);
       } else {
         await supabaseAdmin.from("projects").delete().eq("commit_hash", id);
+        await supabaseAdmin.from("projects").delete().eq("name", id);
       }
     } catch (dbErr) {
       console.warn("Supabase delete project notice:", dbErr.message);
     }
+
+    // 2. Delete from local cache
+    const currentList = readLocalProjects();
+    const updatedList = currentList.filter(
+      (p) => String(p.id) !== String(id) && p.commit_hash !== id && p.name !== id
+    );
+    writeLocalProjects(updatedList);
 
     return res.json({
       success: true,

@@ -23,52 +23,51 @@
     ],
     "demo_video_url": "https://www.youtube.com/watch?v=E9sd8nk9STY",
     "tracking_data": {
-      "milestone_title": "47 days until next preview build",
-      "milestone_date": "Nov 30th",
-      "milestone_progress": 55,
-      "last_build": "Sep 30th",
-      "section_title": "Development Sprint - 86%",
-      "total_tasks_label": "670 Tasks",
-      "changes_last_24h": "22 Changes in last 24hrs",
       "items": [
         {
           "name": "Frontend / UI",
-          "current": 196,
-          "total": 197,
           "unit": "%",
-          "color": "slate"
+          "color": "slate",
+          "total": 197,
+          "current": 196
         },
         {
           "name": "Backend / API",
-          "current": 119,
-          "total": 131,
           "unit": "%",
-          "color": "steel"
+          "color": "steel",
+          "total": 131,
+          "current": 119
         },
         {
           "name": "Database & Storage",
-          "current": 84,
-          "total": 87,
           "unit": "%",
-          "color": "zinc"
+          "color": "zinc",
+          "total": 87,
+          "current": 84
         },
         {
           "name": "Core Features & Code",
-          "current": 181,
-          "total": 255,
           "unit": "%",
-          "color": "charcoal"
+          "color": "charcoal",
+          "total": 255,
+          "current": 181
         },
         {
           "name": "Testing & Bug Fixes",
-          "current": 0,
-          "total": 0,
           "unit": "Fixed",
-          "color": "silver"
+          "color": "silver",
+          "total": 0,
+          "current": 0
         }
       ],
-      "is_published": true,
-      "auto_sync_github": false
+      "last_build": "Sep 30th",
+      "is_published": false,
+      "section_title": "Development Sprint - 86%",
+      "milestone_date": "Nov 30th",
+      "milestone_title": "47 days until next preview build",
+      "changes_last_24h": "22 Changes in last 24hrs",
+      "total_tasks_label": "670 Tasks",
+      "milestone_progress": 55
     },
     "contributors": [
       {
@@ -88,9 +87,9 @@
     ],
     "is_featured": true,
     "sort_order": 1,
-    "updated_at": "2026-10-16T06:32:33.818Z",
+    "updated_at": "2026-10-16T07:54:18.652Z",
     "last_github_sync_at": "2026-10-15T05:28:21.778Z",
-    "is_published": true,
+    "is_published": false,
     "auto_sync_github": false
   },
   {

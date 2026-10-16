@@ -298,77 +298,81 @@ export async function togglePublishService(req, res, next) {
   try {
     const { id } = req.params;
     const { is_published } = req.body;
-    const currentList = readLocalServices();
-    let updatedItem = null;
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-    const updatedList = currentList.map((s) => {
-      const isMatch =
-        String(s.id) === String(id) ||
-        s.command === id ||
-        (req.body.command && s.command === req.body.command) ||
-        (req.body.title && s.title?.toLowerCase() === req.body.title.toLowerCase());
-
-      if (isMatch) {
-        const nextVal = is_published !== undefined ? Boolean(is_published) : !s.is_published;
-        updatedItem = {
-          ...s,
-          is_published: nextVal,
-          updated_at: new Date().toISOString(),
-        };
-        return updatedItem;
-      }
-      return s;
-    });
-
-    if (!updatedItem) {
-      // Find in Supabase directly
-      try {
-        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-        if (isUUID) {
-          const { data: dbSrv } = await supabaseAdmin.from("services").select("*").eq("id", id).maybeSingle();
-          if (dbSrv) {
-            const nextVal = is_published !== undefined ? Boolean(is_published) : false;
-            updatedItem = {
-              ...dbSrv,
-              is_published: nextVal,
-              updated_at: new Date().toISOString(),
-            };
-            updatedList.push(updatedItem);
-          }
+    // 1. Fetch current database record directly
+    let dbSrv = null;
+    try {
+      if (isUUID) {
+        const { data } = await supabaseAdmin.from("services").select("*").eq("id", id).maybeSingle();
+        dbSrv = data;
+      } else {
+        const { data } = await supabaseAdmin.from("services").select("*").eq("command", id).maybeSingle();
+        dbSrv = data;
+        if (!dbSrv) {
+          const { data: byTitle } = await supabaseAdmin.from("services").select("*").eq("title", id).maybeSingle();
+          dbSrv = byTitle;
         }
-      } catch {
-        // ignore
       }
+    } catch {
+      // ignore
     }
 
-    if (!updatedItem) {
+    const currentList = readLocalServices();
+    const localSrv = currentList.find(
+      (s) => String(s.id) === String(id) || s.command === id || (dbSrv && s.command === dbSrv.command)
+    );
+
+    const baseSrv = dbSrv || localSrv;
+    if (!baseSrv) {
       return res.status(404).json({ success: false, error: "Service not found" });
     }
 
-    writeLocalServices(updatedList);
+    const currentVal =
+      dbSrv?.is_published !== undefined && dbSrv?.is_published !== null
+        ? Boolean(dbSrv.is_published)
+        : localSrv?.is_published !== undefined
+        ? Boolean(localSrv.is_published)
+        : true;
 
-    // Sync to Supabase
+    const nextVal = is_published !== undefined ? Boolean(is_published) : !currentVal;
+
+    const updatedItem = {
+      ...baseSrv,
+      is_published: nextVal,
+      updated_at: new Date().toISOString(),
+    };
+
+    // 2. Persist to Supabase
     try {
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-      if (isUUID) {
+      if (isUUID || dbSrv?.id) {
         await supabaseAdmin
           .from("services")
-          .update({ is_published: updatedItem.is_published })
-          .eq("id", id);
+          .update({ is_published: nextVal })
+          .eq("id", dbSrv?.id || id);
       } else {
         await supabaseAdmin
           .from("services")
-          .update({ is_published: updatedItem.is_published })
+          .update({ is_published: nextVal })
           .eq("command", updatedItem.command);
       }
-    } catch {
-      // ignore if is_published column not migrated yet
+    } catch (dbErr) {
+      console.warn("Supabase toggle publish service notice:", dbErr.message);
     }
+
+    // 3. Keep local JSON updated
+    const updatedList = currentList.map((s) => {
+      if (String(s.id) === String(id) || s.command === id || s.command === updatedItem.command) {
+        return { ...s, is_published: nextVal };
+      }
+      return s;
+    });
+    writeLocalServices(updatedList);
 
     return res.json({
       success: true,
       data: updatedItem,
-      message: `Service ${updatedItem.is_published ? "published" : "unpublished"} successfully`,
+      message: `Service ${nextVal ? "published" : "unpublished"} successfully`,
     });
   } catch (err) {
     next(err);
@@ -381,30 +385,26 @@ export async function togglePublishService(req, res, next) {
 export async function deleteService(req, res, next) {
   try {
     const { id } = req.params;
-    const currentList = readLocalServices();
-    const target = currentList.find(
-      (s) => String(s.id) === String(id) || s.command === id
-    );
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-    const updatedList = currentList.filter(
-      (s) => String(s.id) !== String(id) && s.command !== id && (target ? s.title !== target.title : true)
-    );
-    writeLocalServices(updatedList);
-
+    // 1. Delete from Supabase
     try {
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       if (isUUID) {
         await supabaseAdmin.from("services").delete().eq("id", id);
-      } else if (target?.command) {
-        await supabaseAdmin.from("services").delete().eq("command", target.command);
-      } else if (target?.title) {
-        await supabaseAdmin.from("services").delete().eq("title", target.title);
       } else {
         await supabaseAdmin.from("services").delete().eq("command", id);
+        await supabaseAdmin.from("services").delete().eq("title", id);
       }
     } catch (dbErr) {
       console.warn("Supabase delete service notice:", dbErr.message);
     }
+
+    // 2. Delete from local cache
+    const currentList = readLocalServices();
+    const updatedList = currentList.filter(
+      (s) => String(s.id) !== String(id) && s.command !== id && s.title !== id
+    );
+    writeLocalServices(updatedList);
 
     return res.json({
       success: true,
